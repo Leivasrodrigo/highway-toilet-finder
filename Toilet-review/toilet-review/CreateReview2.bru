@@ -1,0 +1,27 @@
+meta {
+  name: CreateReview2
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/reviews
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "toilet": {
+      "id": "{{lastToiletId}}"
+    },
+    "ratingGeneral": 2,
+    "ratingCleanliness": 1,
+    "ratingMaintenance": 2,
+    "comment": "Muito sujo e mal cuidado."
+  }
+}

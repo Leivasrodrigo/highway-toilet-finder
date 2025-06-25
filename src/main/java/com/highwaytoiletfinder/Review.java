@@ -1,5 +1,7 @@
 package com.highwaytoiletfinder;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,8 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "toilet_id", nullable = false)
+    @JsonIgnoreProperties("reviews")
+    @JsonBackReference
     private Toilet toilet;
 
     private Integer ratingGeneral;

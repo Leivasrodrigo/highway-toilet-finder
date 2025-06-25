@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class Toilet {
     private UUID id;
 
     @OneToMany(mappedBy = "toilet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Review> reviews;
 
     private String name;

@@ -1,0 +1,33 @@
+meta {
+  name: CreateToilet
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/toilets
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "name": "Posto Shell 24h",
+    "address": "Rodovia BR-101 km 67, São José - SC",
+    "latitude": -27.620442,
+    "longitude": -48.623412,
+    "placeId": "ChIJd9Po5XZJzpQRUpFd1r_6RVE",
+    "hasMale": true,
+    "hasFemale": true,
+    "hasAccessible": true,
+    "hasBabyChanger": false
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("lastToiletId", res.getBody().id);
+}
