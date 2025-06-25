@@ -20,10 +20,6 @@ public class Toilet {
     @GeneratedValue
     private UUID id;
 
-    @OneToMany(mappedBy = "toilet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Review> reviews;
-
     private String name;
     private String address;
     private Double latitude;
@@ -37,4 +33,8 @@ public class Toilet {
 
     private Double avgRating;
     private Integer totalReviews;
+
+    @OneToMany(mappedBy = "toilet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Review> reviews;
 }

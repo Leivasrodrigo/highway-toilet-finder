@@ -21,12 +21,6 @@ public class Review {
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "toilet_id", nullable = false)
-    @JsonIgnoreProperties("reviews")
-    @JsonBackReference
-    private Toilet toilet;
-
     private Integer ratingGeneral;
     private Integer ratingCleanliness;
     private Integer ratingMaintenance;
@@ -35,4 +29,10 @@ public class Review {
 
     @Column(columnDefinition = "TIMESTAMP")
     private Instant createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "toilet_id", nullable = false)
+    @JsonIgnoreProperties("reviews")
+    @JsonBackReference
+    private Toilet toilet;
 }
