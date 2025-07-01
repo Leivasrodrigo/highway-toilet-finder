@@ -33,11 +33,11 @@ public class ReviewService {
         review.setCreatedAt(Instant.now());
 
         Review savedReview = reviewRepository.save(review);
-        updateToiledAvgRating(toiletId);
+        updateToiletAvgRating(toiletId);
         return savedReview;
     }
 
-    private void updateToiledAvgRating(UUID toiletId) {
+    private void updateToiletAvgRating(UUID toiletId) {
         List<Review> reviews = reviewRepository.findByToiletId(toiletId);
 
         double avg = reviews.stream()
