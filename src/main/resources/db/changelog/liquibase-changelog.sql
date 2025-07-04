@@ -25,3 +25,6 @@ CREATE TABLE reviews (
 
     CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id)
 );
+
+--changeset rodrigo:add-place-id-to-toilets
+ALTER TABLE toilets ADD COLUMN place_id VARCHAR(255);
