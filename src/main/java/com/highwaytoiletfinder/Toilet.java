@@ -43,8 +43,7 @@ public class Toilet {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "place_id")
-    @JsonIgnoreProperties("toilets")
-    @JsonBackReference
+    @JsonIgnoreProperties({"toilets"})
     private Place place;
 
     @OneToMany(mappedBy = "toilet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

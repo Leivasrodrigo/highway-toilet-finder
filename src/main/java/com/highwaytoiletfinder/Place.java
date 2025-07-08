@@ -1,8 +1,10 @@
 package com.highwaytoiletfinder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,4 +25,8 @@ public class Place {
 
     @Column(name = "google_place_id")
     private String googlePlaceId;
+
+    @OneToMany(mappedBy = "place")
+    @JsonIgnore
+    private List<Toilet> toilets;
 }

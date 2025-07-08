@@ -11,6 +11,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ToiletService {
     private final ToiletRepository toiletRepository;
+    private final PlaceRepository placeRepository;
 
     public List<Toilet> getAll() {
         return toiletRepository.findAll();
@@ -21,6 +22,12 @@ public class ToiletService {
     }
 
     public Toilet save(Toilet toilet) {
+        UUID placeId = toilet.getPlace().getId();
+
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new RuntimeException("Place not found with id: " + placeId));
+
+        toilet.setPlace(place);
         return toiletRepository.save(toilet);
     }
 }

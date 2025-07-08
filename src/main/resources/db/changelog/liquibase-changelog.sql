@@ -33,6 +33,7 @@ CREATE TABLE reviews (
     rating_maintenance INT,
     comment VARCHAR(500),
     created_at TIMESTAMP,
+    user_id UUID,
 
     CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id)
 );
