@@ -27,12 +27,12 @@ public class Review {
 
     private String comment;
 
-    @Column(columnDefinition = "TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP", name = "created_at")
     private Instant createdAt;
 
     @ManyToOne
     @JoinColumn(name = "toilet_id", nullable = false)
-    @JsonIgnoreProperties("reviews")
+//    @JsonIgnoreProperties("reviews")
     @JsonBackReference
     private Toilet toilet;
 }

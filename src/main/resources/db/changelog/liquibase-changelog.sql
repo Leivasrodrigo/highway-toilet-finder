@@ -1,3 +1,11 @@
+-- changeset rodrigo:create-places-table
+CREATE TABLE places (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255),
+    address VARCHAR(255),
+    google_place_id VARCHAR(255)
+);
+
 --changeset rodrigo:create-toilet-table
 CREATE TABLE toilets (
     id UUID PRIMARY KEY,
@@ -10,7 +18,10 @@ CREATE TABLE toilets (
     has_accessible BOOLEAN,
     has_baby_changer BOOLEAN,
     avg_rating DOUBLE PRECISION,
-    total_reviews INT
+    total_reviews INT,
+    place_id UUID,
+
+    CONSTRAINT fk_toilet_place FOREIGN KEY (place_id) REFERENCES places(id)
 );
 
 --changeset rodrigo:create-review-table
@@ -25,6 +36,3 @@ CREATE TABLE reviews (
 
     CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id)
 );
-
---changeset rodrigo:add-place-id-to-toilets
-ALTER TABLE toilets ADD COLUMN place_id VARCHAR(255);
