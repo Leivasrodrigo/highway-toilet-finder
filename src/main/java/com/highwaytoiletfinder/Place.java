@@ -22,6 +22,8 @@ public class Place {
     private String name;
 
     private String address;
+    private Double latitude;
+    private Double longitude;
 
     @Column(name = "google_place_id")
     private String googlePlaceId;

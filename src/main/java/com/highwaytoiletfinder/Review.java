@@ -33,6 +33,12 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "toilet_id", nullable = false)
 //    @JsonIgnoreProperties("reviews")
-    @JsonBackReference
+    @JsonBackReference(value = "toilet-review")
     private Toilet toilet;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties("reviews")
+    @JsonBackReference(value = "user-review")
+    private User user;
 }

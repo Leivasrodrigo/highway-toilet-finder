@@ -22,11 +22,6 @@ public class Toilet {
     @GeneratedValue
     private UUID id;
 
-    private String name;
-    private String address;
-    private Double latitude;
-    private Double longitude;
-
     @Column(name = "has_male")
     private Boolean hasMale;
     @Column(name = "has_female")
@@ -41,12 +36,12 @@ public class Toilet {
     @Column(name = "total_reviews")
     private Integer totalReviews;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "place_id")
     @JsonIgnoreProperties({"toilets"})
     private Place place;
 
     @OneToMany(mappedBy = "toilet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value = "toilet-review")
     private List<Review> reviews;
 }

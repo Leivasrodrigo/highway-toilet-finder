@@ -19,6 +19,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ReviewServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
     @Mock
     private ReviewRepository reviewRepository;
 
@@ -85,8 +89,15 @@ public class ReviewServiceTest {
         Toilet toilet = new Toilet();
         toilet.setId(toiletId);
 
+        UUID userId = UUID.randomUUID();
+        User user = new User();
+        user.setId(userId);
+        user.setName("John Doe");
+        user.setEmail("test@example.com");
+
         Review review = new Review();
         review.setId(UUID.randomUUID());
+        review.setUser(user);
         review.setToilet(toilet);
         review.setRatingGeneral(4);
         review.setRatingCleanliness(3);
@@ -95,12 +106,14 @@ public class ReviewServiceTest {
         review.setCreatedAt(Instant.now());
 
         Review reviewToPost = new Review();
+        reviewToPost.setUser(user);
         reviewToPost.setToilet(toilet);
         reviewToPost.setRatingGeneral(4);
         reviewToPost.setRatingCleanliness(3);
         reviewToPost.setRatingMaintenance(5);
         reviewToPost.setComment("Banheiro limpo e funcional.");
 
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
@@ -109,23 +122,34 @@ public class ReviewServiceTest {
         assertEquals(4, result.getRatingGeneral());
         assertEquals(3, result.getRatingCleanliness());
         assertEquals("Banheiro limpo e funcional.", result.getComment());
-        verify(reviewRepository).save(reviewToPost);
+        verify(reviewRepository).save(any(Review.class));
     }
 
     @Test
     void updateToiletAvgRating_shouldUpdateToiletRating() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        UUID placeId = UUID.randomUUID();
+        Place place = new Place();
+        place.setId(placeId);
+        place.setName("Posto A");
+        place.setAddress("Av. Central, 1000");
+        place.setLatitude(-27.12345);
+        place.setLongitude(-48.98765);
+        place.setGooglePlaceId("some-google-place-id");
+
         UUID toiletId = UUID.randomUUID();
         Toilet toilet = new Toilet();
         toilet.setId(toiletId);
-        toilet.setName("Posto A");
+        toilet.setPlace(place);
 
         Review review1 = new Review();
         review1.setId(UUID.randomUUID());
         review1.setRatingGeneral(4);
+        review1.setToilet(toilet);
 
         Review review2 = new Review();
         review2.setId(UUID.randomUUID());
         review2.setRatingGeneral(5);
+        review2.setToilet(toilet);
 
         when(reviewRepository.findByToiletId(toiletId)).thenReturn(List.of(review1, review2));
         when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));

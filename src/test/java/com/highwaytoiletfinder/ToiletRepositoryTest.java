@@ -7,6 +7,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(locations = "classpath:/application-test.properties")
 public class ToiletRepositoryTest {
 
-//    @Autowired
-//    private ReviewRepository reviewRepository;
+    @Autowired
+    private PlaceRepository placeRepository;
 
     @Autowired
     private ToiletRepository toiletRepository;
@@ -30,13 +31,29 @@ public class ToiletRepositoryTest {
 
     @Test
     void findALl_shouldRetrieveAllToilets() {
+        Place place1 = new Place();
+        place1.setName("Posto A");
+        place1.setAddress("Av. Central, 1000");
+        place1.setLatitude(-27.12345);
+        place1.setLongitude(-48.98765);
+        place1.setGooglePlaceId("some-google-place-id");
+        placeRepository.save(place1);
+
         Toilet toilet1 = new Toilet();
-        toilet1.setName("Posto A");
+        toilet1.setPlace(place1);
 
         toiletRepository.save(toilet1);
 
+        Place place2 = new Place();
+        place2.setName("Posto B");
+        place2.setAddress("Av. Central, 1000");
+        place2.setLatitude(-27.12345);
+        place2.setLongitude(-48.98765);
+        place2.setGooglePlaceId("some-google-place-id");
+        placeRepository.save(place2);
+
         Toilet toilet2 = new Toilet();
-        toilet2.setName("Posto B");
+        toilet2.setPlace(place2);
 
         toiletRepository.save(toilet2);
 
@@ -44,20 +61,31 @@ public class ToiletRepositoryTest {
 
         assertThat(allToilets).hasSize(2);
 
-        List<String> comments = allToilets.stream().map(Toilet::getName).toList();
-        assertThat(comments).containsExactlyInAnyOrder("Posto A", "Posto B");
+        List<String> placeNames = allToilets.stream()
+                .map(t -> t.getPlace().getName())
+                .toList();
+
+        assertThat(placeNames).containsExactlyInAnyOrder("Posto A", "Posto B");
     }
 
     @Test
     void findByToiletIdShouldReturnExistingToilet() {
+        Place place = new Place();
+        place.setName("Posto A");
+        place.setAddress("Av. Central, 1000");
+        place.setLatitude(-27.12345);
+        place.setLongitude(-48.98765);
+        place.setGooglePlaceId("some-google-place-id");
+        placeRepository.save(place);
+
         Toilet toilet = new Toilet();
-        toilet.setName("Posto A");
+        toilet.setPlace(place);
 
         toiletRepository.save(toilet);
 
         Optional<Toilet> result = toiletRepository.findById(toilet.getId());
 
         assertTrue(result.isPresent(), "Expected Optional to be present");
-        assertEquals("Posto A", result.get().getName());
+        assertEquals("Posto A", result.get().getPlace().getName());
     }
 }

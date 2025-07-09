@@ -3,16 +3,21 @@ CREATE TABLE places (
     id UUID PRIMARY KEY,
     name VARCHAR(255),
     address VARCHAR(255),
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
     google_place_id VARCHAR(255)
+);
+
+-- changeset rodrigo:create-users-table
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255)
 );
 
 --changeset rodrigo:create-toilet-table
 CREATE TABLE toilets (
     id UUID PRIMARY KEY,
-    name VARCHAR(255),
-    address VARCHAR(255),
-    latitude DOUBLE PRECISION,
-    longitude DOUBLE PRECISION,
     has_male BOOLEAN,
     has_female BOOLEAN,
     has_accessible BOOLEAN,
@@ -28,12 +33,13 @@ CREATE TABLE toilets (
 CREATE TABLE reviews (
     id UUID PRIMARY KEY,
     toilet_id UUID NOT NULL,
+    user_id UUID NOT NULL,
     rating_general INT,
     rating_cleanliness INT,
     rating_maintenance INT,
     comment VARCHAR(500),
     created_at TIMESTAMP,
-    user_id UUID,
 
-    CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id)
+    CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id),
+    CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES users(id)
 );

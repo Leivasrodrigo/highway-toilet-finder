@@ -15,6 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReviewRepositoryTest {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @Autowired
@@ -28,7 +34,16 @@ public class ReviewRepositoryTest {
 
     @Test
     void findALl_shouldRetrieveAllReviews() {
+        Place place = new Place();
+        place.setName("Posto A");
+        place.setAddress("Av. Central, 1000");
+        place.setLatitude(-27.12345);
+        place.setLongitude(-48.98765);
+        place.setGooglePlaceId("some-google-place-id");
+        placeRepository.save(place);
+
         Toilet toilet = new Toilet();
+        toilet.setPlace(place);
 
         toiletRepository.save(toilet);
 
@@ -47,6 +62,14 @@ public class ReviewRepositoryTest {
         review2.setRatingMaintenance(5);
         review2.setComment("Excelente!");
         review2.setCreatedAt(Instant.now());
+
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("test@example.com");
+        userRepository.save(user);
+
+        review1.setUser(user);
+        review2.setUser(user);
 
         reviewRepository.save(review1);
         reviewRepository.save(review2);
@@ -61,9 +84,23 @@ public class ReviewRepositoryTest {
 
     @Test
     void findByToiletIdShouldReturnExistingReviewsForToilet() {
+        Place place = new Place();
+        place.setName("Posto A");
+        place.setAddress("Av. Central, 1000");
+        place.setLatitude(-27.12345);
+        place.setLongitude(-48.98765);
+        place.setGooglePlaceId("some-google-place-id");
+        placeRepository.save(place);
+
         Toilet toilet = new Toilet();
+        toilet.setPlace(place);
 
         toiletRepository.save(toilet);
+
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("test@example.com");
+        userRepository.save(user);
 
         Review review1 = new Review();
         review1.setToilet(toilet);
@@ -72,6 +109,7 @@ public class ReviewRepositoryTest {
         review1.setRatingMaintenance(5);
         review1.setComment("Banheiro limpo e funcional.");
         review1.setCreatedAt(Instant.now());
+        review1.setUser(user);
 
         reviewRepository.save(review1);
 
@@ -82,6 +120,7 @@ public class ReviewRepositoryTest {
         review2.setRatingMaintenance(5);
         review2.setComment("Excelente!");
         review2.setCreatedAt(Instant.now());
+        review2.setUser(user);
 
         reviewRepository.save(review2);
 
@@ -92,6 +131,7 @@ public class ReviewRepositoryTest {
         review3.setRatingMaintenance(4);
         review3.setComment("Estava sujo.");
         review3.setCreatedAt(Instant.now());
+        review3.setUser(user);
 
         reviewRepository.save(review3);
 

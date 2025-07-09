@@ -13,6 +13,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ToiletRepository toiletRepository;
+    private final UserRepository userRepository;
 
     public List<Review> getByToiletId(UUID toiletId) {
         return reviewRepository.findByToiletId(toiletId);
@@ -25,11 +26,16 @@ public class ReviewService {
 
     public Review save(Review review) {
         UUID toiletId = review.getToilet().getId();
+        UUID userId = review.getUser().getId();
 
         Toilet toilet = toiletRepository.findById(toiletId)
                 .orElseThrow(() -> new RuntimeException("Toilet not found with id: " + toiletId));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
         review.setToilet(toilet);
+        review.setUser(user);
         review.setCreatedAt(Instant.now());
 
         Review savedReview = reviewRepository.save(review);

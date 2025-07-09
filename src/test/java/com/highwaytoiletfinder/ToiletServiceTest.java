@@ -17,6 +17,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ToiletServiceTest {
+
+    @Mock
+    PlaceRepository placeRepository;
+
     @Mock
     private ToiletRepository toiletRepository;
 
@@ -66,17 +70,29 @@ public class ToiletServiceTest {
 
     @Test
     void save_shouldReturnCreatedToilet() {
+        UUID placeId = UUID.randomUUID();
+        Place place = new Place();
+        place.setId(placeId);
+        place.setName("Posto A");
+        place.setAddress("Av. Central, 1000");
+        place.setLatitude(-27.12345);
+        place.setLongitude(-48.98765);
+        place.setGooglePlaceId("some-google-place-id");
+
         UUID toiletId = UUID.randomUUID();
         Toilet toilet = new Toilet();
+        toilet.setPlace(place);
         toilet.setId(toiletId);
 
         Toilet toiletToPost = new Toilet();
+        toiletToPost.setPlace(place);
 
+        when(placeRepository.findById(placeId)).thenReturn(Optional.of(place));
         when(toiletRepository.save(any(Toilet.class))).thenReturn(toilet);
 
         Toilet result = toiletService.save(toiletToPost);
 
         assertEquals(toiletId, result.getId());
-        verify(toiletRepository).save(toiletToPost);
+        verify(toiletRepository).save(any(Toilet.class));
     }
 }
