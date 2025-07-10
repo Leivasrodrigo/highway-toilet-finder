@@ -1,6 +1,7 @@
 -- changeset rodrigo:create-places-table
 CREATE TABLE places (
     id UUID PRIMARY KEY,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     name VARCHAR(255),
     address VARCHAR(255),
     latitude DOUBLE PRECISION,
@@ -18,8 +19,9 @@ CREATE TABLE users (
 --changeset rodrigo:create-toilet-table
 CREATE TABLE toilets (
     id UUID PRIMARY KEY,
-    has_male BOOLEAN,
-    has_female BOOLEAN,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
+    gender VARCHAR(10) NOT NULL,
+    has_shower BOOLEAN,
     has_accessible BOOLEAN,
     has_baby_changer BOOLEAN,
     avg_rating DOUBLE PRECISION,
@@ -32,6 +34,7 @@ CREATE TABLE toilets (
 --changeset rodrigo:create-review-table
 CREATE TABLE reviews (
     id UUID PRIMARY KEY,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     toilet_id UUID NOT NULL,
     user_id UUID NOT NULL,
     rating_general INT,

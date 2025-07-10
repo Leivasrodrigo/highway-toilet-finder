@@ -19,6 +19,9 @@ public class Place {
     @GeneratedValue
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status = Status.PENDING;;
     private String name;
 
     private String address;

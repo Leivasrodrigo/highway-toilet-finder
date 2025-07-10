@@ -21,6 +21,9 @@ public class Review {
     @GeneratedValue
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status = Status.PENDING;;
     private Integer ratingGeneral;
     private Integer ratingCleanliness;
     private Integer ratingMaintenance;

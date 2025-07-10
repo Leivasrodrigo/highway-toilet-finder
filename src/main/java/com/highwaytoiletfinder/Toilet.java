@@ -22,10 +22,14 @@ public class Toilet {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "has_male")
-    private Boolean hasMale;
-    @Column(name = "has_female")
-    private Boolean hasFemale;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status = Status.PENDING;;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
+    @Column(name = "has_shower")
+    private Boolean hasShower;
     @Column(name = "has_accessible")
     private Boolean hasAccessible;
     @Column(name = "has_baby_changer")
