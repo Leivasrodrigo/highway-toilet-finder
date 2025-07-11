@@ -1,5 +1,7 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.review.controller;
 
+import com.highwaytoiletfinder.review.service.ReviewService;
+import com.highwaytoiletfinder.review.model.Review;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

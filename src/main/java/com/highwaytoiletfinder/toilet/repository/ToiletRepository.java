@@ -1,5 +1,6 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.toilet.repository;
 
+import com.highwaytoiletfinder.toilet.model.Toilet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

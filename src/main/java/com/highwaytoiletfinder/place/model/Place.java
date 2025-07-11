@@ -1,6 +1,8 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.place.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.highwaytoiletfinder.common.enums.Status;
+import com.highwaytoiletfinder.toilet.model.Toilet;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,5 +1,14 @@
 package com.highwaytoiletfinder;
 
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.review.model.Review;
+import com.highwaytoiletfinder.review.repository.ReviewRepository;
+import com.highwaytoiletfinder.toilet.enums.Gender;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+import com.highwaytoiletfinder.user.model.User;
+import com.highwaytoiletfinder.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -44,6 +53,7 @@ public class ReviewRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
+        toilet.setGender(Gender.MALE);
 
         toiletRepository.save(toilet);
 
@@ -94,6 +104,7 @@ public class ReviewRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
+        toilet.setGender(Gender.MALE);
 
         toiletRepository.save(toilet);
 

@@ -1,4 +1,4 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.common.enums;
 
 public enum Status {
     PENDING,

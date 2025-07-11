@@ -1,6 +1,10 @@
 package com.highwaytoiletfinder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.toilet.controller.ToiletController;
+import com.highwaytoiletfinder.toilet.service.ToiletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

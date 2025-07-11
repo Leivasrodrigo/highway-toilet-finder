@@ -1,8 +1,11 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.toilet.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.review.model.Review;
+import com.highwaytoiletfinder.common.enums.Status;
+import com.highwaytoiletfinder.toilet.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 

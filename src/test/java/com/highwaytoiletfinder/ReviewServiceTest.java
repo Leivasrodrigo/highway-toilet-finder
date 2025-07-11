@@ -1,5 +1,13 @@
 package com.highwaytoiletfinder;
 
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.review.model.Review;
+import com.highwaytoiletfinder.review.repository.ReviewRepository;
+import com.highwaytoiletfinder.review.service.ReviewService;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+import com.highwaytoiletfinder.user.model.User;
+import com.highwaytoiletfinder.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

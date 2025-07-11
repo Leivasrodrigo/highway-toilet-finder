@@ -1,5 +1,9 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.toilet.service;
 
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.user.repository;
 
+import com.highwaytoiletfinder.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

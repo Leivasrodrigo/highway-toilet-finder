@@ -1,5 +1,10 @@
 package com.highwaytoiletfinder;
 
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.toilet.enums.Gender;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -7,7 +12,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,6 +45,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet1 = new Toilet();
         toilet1.setPlace(place1);
+        toilet1.setGender(Gender.MALE);
 
         toiletRepository.save(toilet1);
 
@@ -54,6 +59,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet2 = new Toilet();
         toilet2.setPlace(place2);
+        toilet2.setGender(Gender.MALE);
 
         toiletRepository.save(toilet2);
 
@@ -80,6 +86,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
+        toilet.setGender(Gender.MALE);
 
         toiletRepository.save(toilet);
 

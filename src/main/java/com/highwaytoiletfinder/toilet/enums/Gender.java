@@ -1,4 +1,4 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.toilet.enums;
 
 public enum Gender {
     MALE,

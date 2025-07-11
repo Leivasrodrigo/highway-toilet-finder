@@ -1,9 +1,10 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.toilet.controller;
 
+import com.highwaytoiletfinder.toilet.service.ToiletService;
+import com.highwaytoiletfinder.toilet.model.Toilet;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

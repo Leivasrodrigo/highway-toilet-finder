@@ -1,6 +1,7 @@
-package com.highwaytoiletfinder;
+package com.highwaytoiletfinder.user.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.highwaytoiletfinder.review.model.Review;
 import jakarta.persistence.*;
 import lombok.*;
 
