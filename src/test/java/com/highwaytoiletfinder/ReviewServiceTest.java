@@ -1,9 +1,12 @@
 package com.highwaytoiletfinder;
 
 import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
+import com.highwaytoiletfinder.review.mapper.ReviewMapper;
 import com.highwaytoiletfinder.review.model.Review;
 import com.highwaytoiletfinder.review.repository.ReviewRepository;
 import com.highwaytoiletfinder.review.service.ReviewService;
+import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import com.highwaytoiletfinder.user.model.User;
@@ -37,6 +40,9 @@ public class ReviewServiceTest {
     @Mock
     private ToiletRepository toiletRepository;
 
+    @Mock
+    private ReviewMapper reviewMapper;
+
     @InjectMocks
     private ReviewService reviewService;
 
@@ -48,90 +54,181 @@ public class ReviewServiceTest {
     @Test
     void getByToiletId_shouldReturnReviewsForGivenToiletId() {
         UUID toiletId = UUID.randomUUID();
+        UUID userId1 = UUID.randomUUID();
+        UUID userId2 = UUID.randomUUID();
+
+        User user1 = new User();
+        user1.setId(userId1);
+        user1.setName("John Doe");
+        user1.setEmail("john.doe@example.com");
 
         Review review1 = new Review();
         review1.setId(UUID.randomUUID());
+        review1.setUser(user1);
         review1.setRatingGeneral(4);
         review1.setCreatedAt(Instant.now());
 
+        User user2 = new User();
+        user2.setId(userId2);
+        user2.setName("Getulio Pereira");
+        user2.setEmail("getulio.pereira@example.com");
+
         Review review2 = new Review();
         review2.setId(UUID.randomUUID());
+        review2.setUser(user2);
         review2.setRatingGeneral(5);
         review2.setCreatedAt(Instant.now());
 
-        when(reviewRepository.findByToiletId(toiletId)).thenReturn(List.of(review1, review2));
+        ReviewResponseDTO response1 = new ReviewResponseDTO();
+        response1.setId(review1.getId());
+        response1.setUserId(userId1);
+        response1.setUserName("John Doe");
+        response1.setRatingGeneral(4);
 
-        List<Review> result = reviewService.getByToiletId(toiletId);
+        ReviewResponseDTO response2 = new ReviewResponseDTO();
+        response2.setId(review2.getId());
+        response2.setUserId(userId2);
+        response2.setUserName("Getulio Pereira");
+        response2.setRatingGeneral(5);
+
+        when(reviewRepository.findByToiletId(toiletId)).thenReturn(List.of(review1, review2));
+        when(reviewMapper.toResponseDTO(review1)).thenReturn(response1);
+        when(reviewMapper.toResponseDTO(review2)).thenReturn(response2);
+
+        List<ReviewResponseDTO> result = reviewService.getByToiletId(toiletId);
 
         assertEquals(2, result.size());
         assertEquals(4, result.get(0).getRatingGeneral());
         assertEquals(5, result.get(1).getRatingGeneral());
+        assertEquals("John Doe", result.get(0).getUserName());
+        assertEquals("Getulio Pereira", result.get(1).getUserName());
+
         verify(reviewRepository).findByToiletId(toiletId);
+        verify(reviewMapper).toResponseDTO(review1);
+        verify(reviewMapper).toResponseDTO(review2);
     }
 
     @Test
     void getById_shouldReturnExistentReview() {
+        UUID toiletId = UUID.randomUUID();
         UUID reviewId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        Toilet toilet = new Toilet();
+        toilet.setId(toiletId);
+
+        User user = new User();
+        user.setId(userId);
+        user.setName("John Doe");
+        user.setEmail("john.doe@example.com");
 
         Review review = new Review();
         review.setId(reviewId);
+        review.setUser(user);
+        review.setToilet(toilet);
         review.setRatingGeneral(4);
         review.setRatingCleanliness(3);
         review.setRatingMaintenance(5);
         review.setComment("Limpeza razoável, mas bem conservado.");
         review.setCreatedAt(Instant.now());
 
+        ReviewResponseDTO response = new ReviewResponseDTO();
+        response.setId(review.getId());
+        response.setToiletId(toiletId);
+        response.setUserId(userId);
+        response.setUserName("John Doe");
+        response.setRatingGeneral(4);
+        response.setRatingCleanliness(3);
+        response.setRatingMaintenance(5);
+        response.setComment("Limpeza razoável, mas bem conservado.");
+
         when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(reviewMapper.toResponseDTO(review)).thenReturn(response);
 
-        Review result = reviewService.getById(reviewId);
+        Optional<ReviewResponseDTO> result = reviewService.getById(reviewId);
 
-        assertEquals(4, result.getRatingGeneral());
-        assertEquals(3, result.getRatingCleanliness());
-        assertEquals("Limpeza razoável, mas bem conservado.", result.getComment());
+        assertEquals(4, result.get().getRatingGeneral());
+        assertEquals(3, result.get().getRatingCleanliness());
+        assertEquals("Limpeza razoável, mas bem conservado.", result.get().getComment());
         verify(reviewRepository).findById(reviewId);
+        verify(reviewMapper).toResponseDTO(review);
     }
 
     @Test
     void save_shouldReturnCreatedReview() {
         UUID toiletId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        UUID reviewId = UUID.randomUUID();
+
         Toilet toilet = new Toilet();
         toilet.setId(toiletId);
+        toilet.setAvgRating(null);
+        toilet.setTotalReviews(null);
 
-        UUID userId = UUID.randomUUID();
         User user = new User();
         user.setId(userId);
         user.setName("John Doe");
         user.setEmail("test@example.com");
 
-        Review review = new Review();
-        review.setId(UUID.randomUUID());
-        review.setUser(user);
-        review.setToilet(toilet);
-        review.setRatingGeneral(4);
-        review.setRatingCleanliness(3);
-        review.setRatingMaintenance(5);
-        review.setComment("Banheiro limpo e funcional.");
-        review.setCreatedAt(Instant.now());
+        ReviewRequestDTO requestDTO = new ReviewRequestDTO();
+        requestDTO.setToiletId(toiletId);
+        requestDTO.setUserId(userId);
+        requestDTO.setRatingGeneral(4);
+        requestDTO.setRatingCleanliness(3);
+        requestDTO.setRatingMaintenance(5);
+        requestDTO.setComment("Banheiro limpo e funcional.");
 
-        Review reviewToPost = new Review();
-        reviewToPost.setUser(user);
-        reviewToPost.setToilet(toilet);
-        reviewToPost.setRatingGeneral(4);
-        reviewToPost.setRatingCleanliness(3);
-        reviewToPost.setRatingMaintenance(5);
-        reviewToPost.setComment("Banheiro limpo e funcional.");
+        Review reviewToSave = new Review();
+        reviewToSave.setToilet(toilet);
+        reviewToSave.setUser(user);
+        reviewToSave.setRatingGeneral(4);
+        reviewToSave.setRatingCleanliness(3);
+        reviewToSave.setRatingMaintenance(5);
+        reviewToSave.setComment("Banheiro limpo e funcional.");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Review savedReview = new Review();
+        savedReview.setId(reviewId);
+        savedReview.setToilet(toilet);
+        savedReview.setUser(user);
+        savedReview.setRatingGeneral(4);
+        savedReview.setRatingCleanliness(3);
+        savedReview.setRatingMaintenance(5);
+        savedReview.setComment("Banheiro limpo e funcional.");
+        savedReview.setCreatedAt(Instant.now());
+
+        ReviewResponseDTO responseDTO = new ReviewResponseDTO();
+        responseDTO.setId(reviewId);
+        responseDTO.setToiletId(toiletId);
+        responseDTO.setUserId(userId);
+        responseDTO.setUserName("John Doe");
+        responseDTO.setRatingGeneral(4);
+        responseDTO.setRatingCleanliness(3);
+        responseDTO.setRatingMaintenance(5);
+        responseDTO.setComment("Banheiro limpo e funcional.");
+
         when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));
-        when(reviewRepository.save(any(Review.class))).thenReturn(review);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(reviewMapper.toEntity(requestDTO, toilet, user)).thenReturn(reviewToSave);
+        when(reviewRepository.save(reviewToSave)).thenReturn(savedReview);
+        when(reviewMapper.toResponseDTO(savedReview)).thenReturn(responseDTO);
+        when(reviewRepository.findByToiletId(toiletId)).thenReturn(List.of(savedReview));
 
-        Review result = reviewService.save(reviewToPost);
+        ReviewResponseDTO result = reviewService.save(requestDTO);
 
+        assertEquals(reviewId, result.getId());
         assertEquals(4, result.getRatingGeneral());
         assertEquals(3, result.getRatingCleanliness());
         assertEquals("Banheiro limpo e funcional.", result.getComment());
-        verify(reviewRepository).save(any(Review.class));
+        assertEquals(userId, result.getUserId());
+        assertEquals(toiletId, result.getToiletId());
+
+        verify(toiletRepository).findById(toiletId);
+        verify(userRepository).findById(userId);
+        verify(reviewMapper).toEntity(requestDTO, toilet, user);
+        verify(reviewRepository).save(reviewToSave);
+        verify(reviewMapper).toResponseDTO(savedReview);
     }
+
 
     @Test
     void updateToiletAvgRating_shouldUpdateToiletRating() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
@@ -163,9 +260,9 @@ public class ReviewServiceTest {
         when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));
         when(toiletRepository.save(any(Toilet.class))).thenReturn(toilet);
 
-        Method method = ReviewService.class.getDeclaredMethod("updateToiletAvgRating", UUID.class);
+        Method method = ReviewService.class.getDeclaredMethod("updateToiletAvgRating", Toilet.class);
         method.setAccessible(true);
-        method.invoke(reviewService, toiletId);
+        method.invoke(reviewService, toilet);
 
         assertEquals(4.5, toilet.getAvgRating());
         assertEquals(2, toilet.getTotalReviews());

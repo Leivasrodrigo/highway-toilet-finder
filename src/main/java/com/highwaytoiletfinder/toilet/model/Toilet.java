@@ -25,6 +25,7 @@ public class Toilet {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private Status status = Status.PENDING;
 
     @Enumerated(EnumType.STRING)

@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static sun.awt.image.MultiResolutionCachedImage.map;
-
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -54,20 +52,19 @@ public class ReviewService {
         review.setCreatedAt(Instant.now());
         Review saved = reviewRepository.save(review);
 
-        updateToiletAvgRating(toiletId);
+        updateToiletAvgRating(toilet);
 
         return reviewMapper.toResponseDTO(saved);
     }
 
-    private void updateToiletAvgRating(UUID toiletId) {
-        List<Review> reviews = reviewRepository.findByToiletId(toiletId);
+    private void updateToiletAvgRating(Toilet toilet) {
+        List<Review> reviews = reviewRepository.findByToiletId(toilet.getId());
 
         double avg = reviews.stream()
                 .mapToInt(Review::getRatingGeneral)
                 .average()
                 .orElse(0);
 
-        Toilet toilet = toiletRepository.findById(toiletId).orElseThrow();
         toilet.setAvgRating(avg);
         toilet.setTotalReviews(reviews.size());
 
