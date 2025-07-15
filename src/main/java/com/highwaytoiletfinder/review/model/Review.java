@@ -24,13 +24,21 @@ public class Review {
     @GeneratedValue
     private UUID id;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status = Status.PENDING;;
+
+    @Column(name = "rating_general", nullable = false)
     private Integer ratingGeneral;
+
+    @Column(name = "rating_cleanliness", nullable = false)
     private Integer ratingCleanliness;
+
+    @Column(name = "rating_maintenance", nullable = false)
     private Integer ratingMaintenance;
 
+    @Column(columnDefinition = "TEXT")
     private String comment;
 
     @Column(columnDefinition = "TIMESTAMP", name = "created_at")
@@ -38,13 +46,9 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "toilet_id", nullable = false)
-//    @JsonIgnoreProperties("reviews")
-    @JsonBackReference(value = "toilet-review")
     private Toilet toilet;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties("reviews")
-    @JsonBackReference(value = "user-review")
     private User user;
 }

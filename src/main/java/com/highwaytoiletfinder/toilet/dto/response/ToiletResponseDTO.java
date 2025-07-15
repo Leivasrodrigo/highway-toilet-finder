@@ -2,9 +2,11 @@ package com.highwaytoiletfinder.toilet.dto.response;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
+import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.toilet.enums.Gender;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -25,4 +27,6 @@ public class ToiletResponseDTO {
     private Status status;
 
     private PlaceResponseDTO place;
+
+    private List<ReviewResponseDTO> reviews;
 }
