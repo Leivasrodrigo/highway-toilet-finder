@@ -2,7 +2,7 @@
 
 -- changeset rodrigo:create-places-table
 CREATE TABLE places (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) PRIMARY KEY,
     status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     name VARCHAR(255),
     address VARCHAR(255),
@@ -13,7 +13,7 @@ CREATE TABLE places (
 
 -- changeset rodrigo:create-users-table
 CREATE TABLE users (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255),
     password_hash VARCHAR(255)
@@ -21,7 +21,7 @@ CREATE TABLE users (
 
 -- changeset rodrigo:create-toilet-table
 CREATE TABLE toilets (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) PRIMARY KEY,
     status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     gender VARCHAR(10) NOT NULL,
     has_shower BOOLEAN,
@@ -29,16 +29,16 @@ CREATE TABLE toilets (
     has_baby_changer BOOLEAN,
     avg_rating DOUBLE,
     total_reviews INT,
-    place_id CHAR(36),
+    place_id BINARY(16),
     CONSTRAINT fk_toilet_place FOREIGN KEY (place_id) REFERENCES places(id)
 );
 
 -- changeset rodrigo:create-review-table
 CREATE TABLE reviews (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) PRIMARY KEY,
     status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
-    toilet_id CHAR(36) NOT NULL,
-    user_id CHAR(36) NOT NULL,
+    toilet_id BINARY(16) NOT NULL,
+    user_id BINARY(16) NOT NULL,
     rating_general INT,
     rating_cleanliness INT,
     rating_maintenance INT,

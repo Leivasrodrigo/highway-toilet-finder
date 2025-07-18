@@ -12,13 +12,13 @@ post {
 
 body:json {
   {
-    "name": "Maria Souza",
-    "email": "maria.souza@example.com",
-    "password": "senhaSegura123"
+    "name": "Getulio Pereira",
+    "email": "pereira.getulio@example.com",
+    "password": "senhaSegura456"
   }
 }
 
 script:post-response {
-  bru.setEnvVar("UserId1", res.getBody().id);
+  bru.setEnvVar("userId2", res.getBody().id);
   
 }
