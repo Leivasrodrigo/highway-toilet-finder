@@ -1,0 +1,26 @@
+meta {
+  name: CreatePlace1
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/places
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Posto Shell Jardim América",
+    "latitude": -23.561684,
+    "longitude": -46.656139,
+    "address": "Av. Paulista, 1000, São Paulo - SP",
+    "city": "São Paulo",
+    "state": "SP"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("placeId1", res.getBody().id);
+}

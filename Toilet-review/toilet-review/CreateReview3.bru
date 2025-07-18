@@ -1,7 +1,7 @@
 meta {
   name: CreateReview3
   type: http
-  seq: 4
+  seq: 9
 }
 
 post {
@@ -17,7 +17,7 @@ headers {
 body:json {
   {
     "toiletId": "{{lastToiletId}}",
-    "userId": "11111111-2222-3333-4444-555555555555",
+    "userId": "{{lastUserId}}",
     "ratingGeneral": 5,
     "ratingCleanliness": 5,
     "ratingMaintenance": 4,
