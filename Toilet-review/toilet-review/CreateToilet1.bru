@@ -1,0 +1,29 @@
+meta {
+  name: CreateToilet1
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/api/toilets
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "placeId": "{{lastPlaceId}}",
+    "gender": "UNISEX",
+    "hasAccessible": true,
+    "hasBabyChanger": false,
+    "hasShower": true
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("toiletId1", res.getBody().id);
+}

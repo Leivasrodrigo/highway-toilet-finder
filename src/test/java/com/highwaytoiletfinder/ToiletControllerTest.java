@@ -1,7 +1,11 @@
 package com.highwaytoiletfinder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.common.enums.Status;
+import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
+import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
+import com.highwaytoiletfinder.toilet.enums.Gender;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.controller.ToiletController;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
@@ -43,34 +47,52 @@ public class ToiletControllerTest {
     @Test
     void getAll_shouldReturnAllToilets() throws Exception {
         UUID placeId1 = UUID.randomUUID();
-        Place place1 = new Place();
-        place1.setId(placeId1);
-        place1.setName("Posto A");
-        place1.setAddress("Av. Central, 1000");
-        place1.setLatitude(-27.12345);
-        place1.setLongitude(-48.98765);
-        place1.setGooglePlaceId("some-google-place-id");
-
         UUID toiletId1 = UUID.randomUUID();
-        Toilet toilet1 = new Toilet();
-        toilet1.setId(toiletId1);
-        toilet1.setPlace(place1);
+
+        PlaceResponseDTO placeDTO1 = new PlaceResponseDTO();
+        placeDTO1.setId(placeId1);
+        placeDTO1.setName("Posto A");
+        placeDTO1.setAddress("Av. Central, 1000");
+        placeDTO1.setLatitude(-27.12345);
+        placeDTO1.setLongitude(-48.98765);
+        placeDTO1.setGooglePlaceId("some-google-place-id");
+        placeDTO1.setStatus(Status.PENDING);
+
+        ToiletResponseDTO toiletDTO1 = new ToiletResponseDTO();
+        toiletDTO1.setId(toiletId1);
+        toiletDTO1.setPlace(placeDTO1);
+        toiletDTO1.setGender(Gender.UNISEX);
+        toiletDTO1.setHasAccessible(true);
+        toiletDTO1.setHasBabyChanger(false);
+        toiletDTO1.setHasShower(true);
+        toiletDTO1.setAvgRating(4.5);
+        toiletDTO1.setTotalReviews(10);
+        toiletDTO1.setStatus(Status.APPROVED);
 
         UUID placeId2 = UUID.randomUUID();
-        Place place2 = new Place();
-        place2.setId(placeId2);
-        place2.setName("Posto B");
-        place2.setAddress("Av. Central, 1000");
-        place2.setLatitude(-27.12345);
-        place2.setLongitude(-48.98765);
-        place2.setGooglePlaceId("some-google-place-id");
-
         UUID toiletId2 = UUID.randomUUID();
-        Toilet toilet2 = new Toilet();
-        toilet2.setId(toiletId2);
-        toilet2.setPlace(place2);
 
-        when(toiletService.getAll()).thenReturn(List.of(toilet1, toilet2));
+        PlaceResponseDTO placeDTO2 = new PlaceResponseDTO();
+        placeDTO2.setId(placeId2);
+        placeDTO2.setName("Posto B");
+        placeDTO2.setAddress("Av. Central, 1000");
+        placeDTO2.setLatitude(-27.12345);
+        placeDTO2.setLongitude(-48.98765);
+        placeDTO2.setGooglePlaceId("some-google-place-id");
+        placeDTO2.setStatus(Status.PENDING);
+
+        ToiletResponseDTO toiletDTO2 = new ToiletResponseDTO();
+        toiletDTO2.setId(toiletId2);
+        toiletDTO2.setPlace(placeDTO2);
+        toiletDTO2.setGender(Gender.UNISEX);
+        toiletDTO2.setHasAccessible(true);
+        toiletDTO2.setHasBabyChanger(false);
+        toiletDTO2.setHasShower(true);
+        toiletDTO2.setAvgRating(4.5);
+        toiletDTO2.setTotalReviews(10);
+        toiletDTO2.setStatus(Status.APPROVED);
+
+        when(toiletService.getAll()).thenReturn(List.of(toiletDTO1, toiletDTO2));
 
         mockMvc.perform(get("/api/toilets"))
                 .andExpect(status().isOk())
@@ -84,20 +106,29 @@ public class ToiletControllerTest {
     @Test
     void getById_shouldReturnToilet() throws Exception {
         UUID placeId = UUID.randomUUID();
-        Place place = new Place();
-        place.setId(placeId);
-        place.setName("Posto A");
-        place.setAddress("Av. Central, 1000");
-        place.setLatitude(-27.12345);
-        place.setLongitude(-48.98765);
-        place.setGooglePlaceId("some-google-place-id");
-
-        Toilet toilet = new Toilet();
         UUID toiletId = UUID.randomUUID();
-        toilet.setId(toiletId);
-        toilet.setPlace(place);
 
-        when(toiletService.getById(toiletId)).thenReturn(Optional.of(toilet));
+        PlaceResponseDTO placeDTO = new PlaceResponseDTO();
+        placeDTO.setId(placeId);
+        placeDTO.setName("Posto A");
+        placeDTO.setAddress("Av. Central, 1000");
+        placeDTO.setLatitude(-27.12345);
+        placeDTO.setLongitude(-48.98765);
+        placeDTO.setGooglePlaceId("some-google-place-id");
+        placeDTO.setStatus(Status.PENDING);
+
+        ToiletResponseDTO toiletDTO = new ToiletResponseDTO();
+        toiletDTO.setId(toiletId);
+        toiletDTO.setPlace(placeDTO);
+        toiletDTO.setGender(Gender.UNISEX);
+        toiletDTO.setHasAccessible(true);
+        toiletDTO.setHasBabyChanger(false);
+        toiletDTO.setHasShower(true);
+        toiletDTO.setAvgRating(4.5);
+        toiletDTO.setTotalReviews(10);
+        toiletDTO.setStatus(Status.APPROVED);
+
+        when(toiletService.getById(toiletId)).thenReturn(Optional.of(toiletDTO));
 
         mockMvc.perform(get("/api/toilets/" + toiletId))
                 .andExpect(status().isOk())
@@ -111,37 +142,46 @@ public class ToiletControllerTest {
     @Test
     void create_shouldReturnCreatedToilet() throws Exception {
         UUID placeId = UUID.randomUUID();
-        Place place = new Place();
-        place.setId(placeId);
-        place.setName("Posto A");
-        place.setAddress("Av. Central, 1000");
-        place.setLatitude(-27.12345);
-        place.setLongitude(-48.98765);
-        place.setGooglePlaceId("some-google-place-id");
-
         UUID toiletId = UUID.randomUUID();
-        Toilet toilet = new Toilet();
-        toilet.setId(toiletId);
-        toilet.setPlace(place);
 
-        String json = """
-    {
-        "hasMale": true,
-        "hasFemale": true,
-        "hasAccessible": false,
-        "hasBabyChanger": true,
-        "place": {
-            "id": "%s"
-        }
-    }
-    """.formatted(placeId);
+        PlaceResponseDTO placeDTO = new PlaceResponseDTO();
+        placeDTO.setId(placeId);
+        placeDTO.setName("Posto A");
+        placeDTO.setAddress("Av. Central, 1000");
+        placeDTO.setLatitude(-27.12345);
+        placeDTO.setLongitude(-48.98765);
+        placeDTO.setGooglePlaceId("some-google-place-id");
+        placeDTO.setStatus(Status.PENDING);
 
-        when(toiletService.save(any(Toilet.class))).thenReturn(toilet);
+        ToiletResponseDTO responseDTO = new ToiletResponseDTO();
+        responseDTO.setId(toiletId);
+        responseDTO.setGender(Gender.UNISEX);
+        responseDTO.setHasAccessible(false);
+        responseDTO.setHasBabyChanger(true);
+        responseDTO.setHasShower(true);
+        responseDTO.setAvgRating(null);
+        responseDTO.setTotalReviews(null);
+        responseDTO.setStatus(Status.PENDING);
+        responseDTO.setPlace(placeDTO);
+
+        ToiletRequestDTO requestDTO = new ToiletRequestDTO();
+        requestDTO.setPlaceId(placeId);
+        requestDTO.setGender(Gender.UNISEX);
+        requestDTO.setHasAccessible(true);
+        requestDTO.setHasBabyChanger(false);
+        requestDTO.setHasShower(true);
+
+        String json = objectMapper.writeValueAsString(requestDTO);
+
+        when(toiletService.save(any(ToiletRequestDTO.class))).thenReturn(responseDTO);
 
         mockMvc.perform(post("/api/toilets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.place.name").value("Posto A"));
+                .andExpect(jsonPath("$.place.name").value("Posto A"))
+                .andExpect(jsonPath("$.gender").value("UNISEX"))
+                .andExpect(jsonPath("$.hasShower").value(true))
+                .andExpect(jsonPath("$.place.latitude").value(-27.12345));
     }
 }

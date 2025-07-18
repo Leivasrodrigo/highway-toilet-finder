@@ -1,5 +1,10 @@
 package com.highwaytoiletfinder.toilet.controller;
 
+import com.highwaytoiletfinder.place.mapper.PlaceMapper;
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
+import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
+import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import jakarta.validation.Valid;
@@ -20,24 +25,26 @@ public class ToiletController {
     private final ToiletService toiletService;
 
     @GetMapping
-    public ResponseEntity<List<Toilet>> getAll() {
+    public ResponseEntity<List<ToiletResponseDTO>> getAll() {
         return ResponseEntity.ok(toiletService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Toilet> getById(@PathVariable UUID id) {
+    public ResponseEntity<ToiletResponseDTO> getById(@PathVariable UUID id) {
         return toiletService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Toilet> create(@RequestBody @Valid Toilet toilet) {
-        Toilet savedToilet = toiletService.save(toilet);
+    public ResponseEntity<ToiletResponseDTO> create(@RequestBody @Valid ToiletRequestDTO requestDTO) {
+        ToiletResponseDTO savedToilet = toiletService.save(requestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedToilet.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(savedToilet);    }
+
+        return ResponseEntity.created(location).body(savedToilet);
+    }
 }
