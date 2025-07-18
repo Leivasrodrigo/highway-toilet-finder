@@ -23,11 +23,15 @@ public class Place {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private Status status = Status.PENDING;;
+
     private String name;
 
     private String address;
+
     private Double latitude;
+
     private Double longitude;
 
     @Column(name = "google_place_id")

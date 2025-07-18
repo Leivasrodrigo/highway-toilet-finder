@@ -5,9 +5,11 @@ import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.model.Review;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.user.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ReviewMapper {
 
     public Review toEntity(ReviewRequestDTO dto, Toilet toilet, User user) {

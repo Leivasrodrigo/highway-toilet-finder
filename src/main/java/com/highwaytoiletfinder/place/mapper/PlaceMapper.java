@@ -3,9 +3,11 @@ package com.highwaytoiletfinder.place.mapper;
 import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PlaceMapper {
 
     public Place toEntity(PlaceRequestDTO dto) {
@@ -14,6 +16,7 @@ public class PlaceMapper {
                 .address(dto.getAddress())
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
+                .googlePlaceId(dto.getGooglePlaceId())
                 .build();
     }
 
