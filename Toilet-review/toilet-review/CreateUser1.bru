@@ -1,0 +1,24 @@
+meta {
+  name: CreateUser1
+  type: http
+  seq: 3
+}
+
+post {
+  url: //localhost:8080/api/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Maria Souza",
+    "email": "maria.souza@example.com",
+    "password": "senhaSegura123"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("UserId1", res.getBody().id);
+  
+}

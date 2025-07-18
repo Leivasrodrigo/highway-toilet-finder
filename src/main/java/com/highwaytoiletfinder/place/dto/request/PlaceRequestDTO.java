@@ -20,4 +20,6 @@ public class PlaceRequestDTO {
 
     @NotNull
     private Double longitude;
+
+    private String googlePlaceId;
 }

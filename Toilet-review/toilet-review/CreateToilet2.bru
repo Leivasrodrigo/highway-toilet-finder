@@ -1,7 +1,7 @@
 meta {
-  name: CreateToilet
+  name: CreateToilet2
   type: http
-  seq: 1
+  seq: 6
 }
 
 post {
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "placeId": "11111111-2222-3333-4444-555555555555",
+    "placeId": "{{lastPlaceId}}",
     "gender": "UNISEX",
     "hasAccessible": true,
     "hasBabyChanger": false,
@@ -25,5 +25,5 @@ body:json {
 }
 
 script:post-response {
-  bru.setEnvVar("lastToiletId", res.getBody().id);
+  bru.setEnvVar("toiletId1", res.getBody().id);
 }
