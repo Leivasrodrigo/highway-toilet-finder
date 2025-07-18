@@ -24,6 +24,9 @@ public class User {
 
     private String email;
 
+    @Column(name = "password_hash")
+    private String passwordHash;
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference(value = "user-review")
     private List<Review> reviews;
