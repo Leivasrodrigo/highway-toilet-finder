@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "placeId": "{{lastPlaceId}}",
+    "placeId": "{{placeId2}}",
     "gender": "UNISEX",
     "hasAccessible": true,
     "hasBabyChanger": false,
@@ -25,5 +25,5 @@ body:json {
 }
 
 script:post-response {
-  bru.setEnvVar("toiletId1", res.getBody().id);
+  bru.setEnvVar("toiletId2", res.getBody().id);
 }
