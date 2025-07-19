@@ -1,15 +1,21 @@
 package com.highwaytoiletfinder.googleplaces.model;
 
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NearbySearchResponse {
+
     private List<Result> results;
+
+    private String status;
+
+    @JsonProperty("error_message")
+    private String errorMessage;
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
