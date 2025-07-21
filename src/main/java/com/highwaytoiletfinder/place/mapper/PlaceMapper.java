@@ -1,6 +1,7 @@
 package com.highwaytoiletfinder.place.mapper;
 
 import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
+import com.highwaytoiletfinder.place.dto.request.PlaceUpdateRequestDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PlaceMapper {
                 .build();
     }
 
-        public PlaceResponseDTO toResponseDTO(Place place) {
+    public PlaceResponseDTO toResponseDTO(Place place) {
         if (place == null) {
             return null;
         }
@@ -34,5 +35,17 @@ public class PlaceMapper {
                 .googlePlaceId(place.getGooglePlaceId())
                 .status(place.getStatus())
                 .build();
+    }
+
+    public void updateEntityFromDTO(PlaceUpdateRequestDTO dto, Place place) {
+        if (dto.getName() != null) place.setName(dto.getName());
+        if (dto.getAddress() != null) place.setAddress(dto.getAddress());
+        if (dto.getLatitude() != null) place.setLatitude(dto.getLatitude());
+        if (dto.getLongitude() != null) place.setLongitude(dto.getLongitude());
+        if (dto.getStatus() != null) place.setStatus(dto.getStatus());
+
+        if (dto.getGooglePlaceId() != null && place.getGooglePlaceId() == null) {
+            place.setGooglePlaceId(dto.getGooglePlaceId());
+        }
     }
 }

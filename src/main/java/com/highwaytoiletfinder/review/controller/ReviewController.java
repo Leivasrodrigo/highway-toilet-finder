@@ -1,6 +1,7 @@
 package com.highwaytoiletfinder.review.controller;
 
 import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
+import com.highwaytoiletfinder.review.dto.request.ReviewUpdateRequestDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -27,9 +28,8 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ReviewResponseDTO> getById(@PathVariable UUID id) {
-        return reviewService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        ReviewResponseDTO response = reviewService.getById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -42,5 +42,17 @@ public class ReviewController {
                 .toUri();
 
         return ResponseEntity.created(location).body(savedReview);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ReviewResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid ReviewUpdateRequestDTO requestDTO) {
+
+        return ResponseEntity.ok(reviewService.update(id, requestDTO));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        reviewService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

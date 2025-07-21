@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.place.controller;
 
+import com.highwaytoiletfinder.place.dto.request.PlaceUpdateRequestDTO;
 import com.highwaytoiletfinder.place.service.PlaceService;
 import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
@@ -27,9 +28,8 @@ public class PlaceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlaceResponseDTO> getById(@PathVariable UUID id) {
-        return placeService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        PlaceResponseDTO response = placeService.getById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -42,5 +42,17 @@ public class PlaceController {
                 .toUri();
 
         return ResponseEntity.created(location).body(savedPlace);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PlaceResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PlaceUpdateRequestDTO requestDTO) {
+
+        return ResponseEntity.ok(placeService.update(id, requestDTO));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        placeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
