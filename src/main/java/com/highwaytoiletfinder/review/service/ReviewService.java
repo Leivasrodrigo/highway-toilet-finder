@@ -1,6 +1,11 @@
 package com.highwaytoiletfinder.review.service;
 
+import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
+import com.highwaytoiletfinder.common.exceptions.ReviewNotFoundException;
+import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
+import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
 import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
+import com.highwaytoiletfinder.review.dto.request.ReviewUpdateRequestDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
 import com.highwaytoiletfinder.review.model.Review;
@@ -33,9 +38,10 @@ public class ReviewService {
                 .toList();
     }
 
-    public Optional<ReviewResponseDTO> getById(UUID id) {
+    public ReviewResponseDTO getById(UUID id) {
         return reviewRepository.findById(id)
-                .map(reviewMapper::toResponseDTO);
+                .map(reviewMapper::toResponseDTO)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + id));
     }
 
     public ReviewResponseDTO save(ReviewRequestDTO dto) {
@@ -43,10 +49,10 @@ public class ReviewService {
         UUID userId = dto.getUserId();
 
         Toilet toilet = toiletRepository.findById(toiletId)
-                .orElseThrow(() -> new RuntimeException("Toilet not found with id: " + toiletId));
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + toiletId));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         Review review = reviewMapper.toEntity(dto, toilet, user);
         review.setCreatedAt(Instant.now());
@@ -55,6 +61,24 @@ public class ReviewService {
         updateToiletAvgRating(toilet);
 
         return reviewMapper.toResponseDTO(saved);
+    }
+
+    public ReviewResponseDTO update(UUID id, ReviewUpdateRequestDTO dto) {
+        Review existing = reviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + id));
+
+        reviewMapper.updateEntityFromDTO(dto, existing);
+
+        Review updated = reviewRepository.save(existing);
+        return reviewMapper.toResponseDTO(updated);
+    }
+
+    public void delete(UUID id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new ReviewNotFoundException("Review not found with id: " + id);
+        }
+
+        reviewRepository.deleteById(id);
     }
 
     private void updateToiletAvgRating(Toilet toilet) {

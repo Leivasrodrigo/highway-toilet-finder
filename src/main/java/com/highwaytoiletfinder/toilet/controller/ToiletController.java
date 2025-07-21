@@ -1,12 +1,9 @@
 package com.highwaytoiletfinder.toilet.controller;
 
-import com.highwaytoiletfinder.place.mapper.PlaceMapper;
-import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
-import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
-import com.highwaytoiletfinder.toilet.model.Toilet;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +28,8 @@ public class ToiletController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ToiletResponseDTO> getById(@PathVariable UUID id) {
-        return toiletService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        ToiletResponseDTO response = toiletService.getById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -46,5 +42,17 @@ public class ToiletController {
                 .toUri();
 
         return ResponseEntity.created(location).body(savedToilet);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ToiletResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid ToiletUpdateRequestDTO requestDTO) {
+
+        return ResponseEntity.ok(toiletService.update(id, requestDTO));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        toiletService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

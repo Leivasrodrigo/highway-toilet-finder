@@ -1,12 +1,16 @@
 package com.highwaytoiletfinder.toilet.service;
 
+import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
+import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +31,13 @@ public class ToiletService {
                 .map(toiletMapper::toResponseDTO)
                 .toList();    }
 
-    public Optional<ToiletResponseDTO> getById(UUID id) {
+    public ToiletResponseDTO getById(UUID id) {
         return toiletRepository.findById(id)
-                .map(toiletMapper::toResponseDTO);    }
+                .map(toiletMapper::toResponseDTO)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+    }
 
+    @Transactional
     public ToiletResponseDTO save(ToiletRequestDTO dto) {
         UUID placeId = dto.getPlaceId();
 
@@ -41,5 +48,25 @@ public class ToiletService {
         Toilet saved = toiletRepository.save(toilet);
 
         return toiletMapper.toResponseDTO(saved);
+    }
+
+    @Transactional
+    public ToiletResponseDTO update(UUID id, ToiletUpdateRequestDTO dto) {
+        Toilet existing = toiletRepository.findById(id)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+
+        toiletMapper.updateEntityFromDTO(dto, existing, placeRepository);
+
+        Toilet updated = toiletRepository.save(existing);
+        return toiletMapper.toResponseDTO(updated);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        if (!toiletRepository.existsById(id)) {
+            throw new ToiletNotFoundException("Toilet not found with id: " + id);
+        }
+
+        toiletRepository.deleteById(id);
     }
 }

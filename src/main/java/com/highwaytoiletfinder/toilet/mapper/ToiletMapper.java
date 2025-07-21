@@ -1,10 +1,13 @@
 package com.highwaytoiletfinder.toilet.mapper;
 
 import com.highwaytoiletfinder.common.enums.Status;
+import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -52,5 +54,29 @@ public class ToiletMapper {
                 .place(placeMapper.toResponseDTO(toilet.getPlace()))
                 .reviews(reviewDTOs)
                 .build();
+    }
+
+    public void updateEntityFromDTO(ToiletUpdateRequestDTO dto, Toilet toilet, PlaceRepository placeRepository) {
+        if (dto.getGender() != toilet.getGender()) {
+            toilet.setGender(dto.getGender());
+        }
+
+        if (dto.getHasShower() != null) {
+            toilet.setHasShower(dto.getHasShower());
+        }
+
+        if (dto.getHasAccessible() != null) {
+            toilet.setHasAccessible(dto.getHasAccessible());
+        }
+
+        if (dto.getHasBabyChanger() != null) {
+            toilet.setHasBabyChanger(dto.getHasBabyChanger());
+        }
+
+        if (dto.getPlaceId() != null) {
+            Place place = placeRepository.findById(dto.getPlaceId())
+                    .orElseThrow(() -> new PlaceNotFoundException("Place not found"));
+            toilet.setPlace(place);
+        }
     }
 }
