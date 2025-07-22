@@ -1,8 +1,7 @@
 package com.highwaytoiletfinder.place.controller;
 
-import com.highwaytoiletfinder.place.dto.request.PlaceUpdateRequestDTO;
+import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
 import com.highwaytoiletfinder.place.service.PlaceService;
-import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,27 +31,29 @@ public class PlaceController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<PlaceResponseDTO> create(@RequestBody @Valid PlaceRequestDTO requestDTO) {
-        PlaceResponseDTO savedPlace = placeService.save(requestDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedPlace.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(savedPlace);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<PlaceResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid PlaceUpdateRequestDTO requestDTO) {
-
-        return ResponseEntity.ok(placeService.update(id, requestDTO));
-    }
-
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         placeService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<PlaceResponseDTO> createOrUpdate(@RequestBody @Valid PlaceCommandDTO commandDTO) {
+        PlaceResponseDTO result;
+
+        if (commandDTO.getId() == null) {
+            result = placeService.createPlace(commandDTO);
+
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(result.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).body(result);
+        } else {
+            result = placeService.updatePlace(commandDTO);
+            return ResponseEntity.ok(result);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.highwaytoiletfinder.place.service;
 
-import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
-import com.highwaytoiletfinder.place.dto.request.PlaceUpdateRequestDTO;
+import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
 import com.highwaytoiletfinder.place.model.Place;
@@ -34,19 +33,21 @@ public class PlaceService {
                 .orElseThrow(() -> new PlaceNotFoundException("Place not found with id: " + id));
     }
 
-    public PlaceResponseDTO save(PlaceRequestDTO dto) {
-
-        Place place = placeMapper.toEntity(dto);
+    public PlaceResponseDTO createPlace(PlaceCommandDTO dto) {
+        Place place = placeMapper.toEntityFromCommandDTO(dto);
         Place saved = placeRepository.save(place);
-
         return placeMapper.toResponseDTO(saved);
     }
 
-    public PlaceResponseDTO update(UUID id, PlaceUpdateRequestDTO dto) {
-        Place existing = placeRepository.findById(id)
-                .orElseThrow(() -> new PlaceNotFoundException("Place not found"));
+    public PlaceResponseDTO updatePlace(PlaceCommandDTO dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("ID must be provided for update");
+        }
 
-        placeMapper.updateEntityFromDTO(dto, existing);
+        Place existing = placeRepository.findById(dto.getId())
+                .orElseThrow(() -> new PlaceNotFoundException("Place not found with id: " + dto.getId()));
+
+        placeMapper.updateEntityFromCommandDTO(dto, existing);
 
         Place updated = placeRepository.save(existing);
         return placeMapper.toResponseDTO(updated);

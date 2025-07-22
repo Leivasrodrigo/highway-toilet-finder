@@ -1,0 +1,11 @@
+meta {
+  name: updateReview1
+  type: http
+  seq: 10
+}
+
+patch {
+  url: http://localhost:8080/api/reviews/{{reviewId1}}
+  body: none
+  auth: none
+}
