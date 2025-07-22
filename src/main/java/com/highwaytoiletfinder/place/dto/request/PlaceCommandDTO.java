@@ -2,17 +2,32 @@ package com.highwaytoiletfinder.place.dto.request;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlaceUpdateRequestDTO {
+public class PlaceCommandDTO {
+
+    @NotBlank(message = "Command is required and must be 'create' or 'update'")
+    private String command;
+
+    private UUID id;
+
     private String name;
+
     private String address;
+
     private Double latitude;
+
     private Double longitude;
+
     private String googlePlaceId;
+
     private Status status;
 }

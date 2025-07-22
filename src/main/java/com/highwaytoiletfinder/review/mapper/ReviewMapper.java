@@ -48,7 +48,8 @@ public class ReviewMapper {
             review.setRatingMaintenance(dto.getRatingMaintenance());
         }
         if (dto.getComment() != null) {
-            review.setComment(dto.getComment());
+            String trimmed = dto.getComment().trim();
+            review.setComment(trimmed.isEmpty() ? null : trimmed);
         }
     }
 }

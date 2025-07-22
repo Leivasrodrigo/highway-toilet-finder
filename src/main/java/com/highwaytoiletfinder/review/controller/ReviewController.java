@@ -50,7 +50,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.update(id, requestDTO));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         reviewService.delete(id);
         return ResponseEntity.noContent().build();

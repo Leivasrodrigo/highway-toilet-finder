@@ -16,11 +16,16 @@ headers {
 
 body:json {
   {
-    "toiletId": "{{toiletId2}}",
+    "toiletId": "{{toiletId1}}",
     "userId": "{{userId1}}",
     "ratingGeneral": 2,
     "ratingCleanliness": 1,
     "ratingMaintenance": 2,
     "comment": "Muito sujo e mal cuidado."
   }
+}
+
+script:post-response {
+  bru.setEnvVar("reviewId1", res.getBody().id);
+  
 }

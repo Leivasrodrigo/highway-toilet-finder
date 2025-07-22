@@ -1,0 +1,27 @@
+meta {
+  name: CreatePlace1Update
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/places
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id": "{{placeId1}}",
+    "name": "Auto Posto BR - Rodovia dos Bandeirantes",
+    "latitude": -23.545123,
+    "longitude": -46.633456,
+    "address": "Rod. dos Bandeirantes, Km 28, Jundiaí - SP",
+    "city": "Jundiaí",
+    "state": "SP"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("placeId1", res.getBody().id);
+}
