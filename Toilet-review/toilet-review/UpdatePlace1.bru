@@ -1,7 +1,7 @@
 meta {
-  name: CreatePlace1
+  name: UpdatePlace1
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
@@ -12,8 +12,9 @@ post {
 
 body:json {
   {
-    "command": "create",
-    "name": "Auto Posto BR - Rodovia",
+    "command": "update",
+    "id": "{{placeId1}}",
+    "name": "Auto Posto BR - Rodovia Bandeirantes",
     "latitude": -23.545123,
     "longitude": -46.633456,
     "address": "Rod. dos Bandeirantes, Km 28, Jundiaí - SP",

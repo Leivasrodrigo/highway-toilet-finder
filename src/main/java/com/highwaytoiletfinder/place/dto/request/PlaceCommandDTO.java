@@ -3,7 +3,6 @@ package com.highwaytoiletfinder.place.dto.request;
 import com.highwaytoiletfinder.common.enums.Status;
 import lombok.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 

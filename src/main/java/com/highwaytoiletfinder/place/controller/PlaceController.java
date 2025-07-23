@@ -1,10 +1,12 @@
 package com.highwaytoiletfinder.place.controller;
 
+import com.highwaytoiletfinder.place.commandStrategy.PlaceCommandStrategies;
 import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
 import com.highwaytoiletfinder.place.service.PlaceService;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PlaceController {
 
+    @Autowired
+    private final PlaceCommandStrategies placeCommandStrategies;
     private final PlaceService placeService;
 
     @GetMapping
@@ -31,28 +35,20 @@ public class PlaceController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        placeService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping
-    public ResponseEntity<PlaceResponseDTO> createOrUpdate(@RequestBody @Valid PlaceCommandDTO commandDTO) {
-        PlaceResponseDTO result;
+    public ResponseEntity<PlaceResponseDTO> handlePlaceCommand(@RequestBody @Valid PlaceCommandDTO commandDTO) {
+        PlaceResponseDTO result = placeCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        if (commandDTO.getId() == null) {
-            result = placeService.createPlace(commandDTO);
-
+        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(result.getId())
                     .toUri();
-
             return ResponseEntity.created(location).body(result);
+        } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
+            return ResponseEntity.noContent().build();
         } else {
-            result = placeService.updatePlace(commandDTO);
             return ResponseEntity.ok(result);
         }
     }

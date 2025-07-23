@@ -1,11 +1,12 @@
 package com.highwaytoiletfinder.review.controller;
 
-import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
-import com.highwaytoiletfinder.review.dto.request.ReviewUpdateRequestDTO;
+import com.highwaytoiletfinder.review.commandStrategy.ReviewCommandStrategies;
+import com.highwaytoiletfinder.review.dto.request.ReviewCommandDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,6 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReviewController {
 
+    @Autowired
+    private final ReviewCommandStrategies reviewCommandStrategies;
     private final ReviewService reviewService;
 
     @GetMapping("/toilet/{toiletId}")
@@ -33,26 +36,20 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewResponseDTO> create(@RequestBody @Valid ReviewRequestDTO requestDTO) {
-        ReviewResponseDTO savedReview = reviewService.save(requestDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedReview.getId())
-                .toUri();
+    public ResponseEntity<ReviewResponseDTO> createOrUpdate(@RequestBody @Valid ReviewCommandDTO commandDTO) {
+        ReviewResponseDTO result = reviewCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        return ResponseEntity.created(location).body(savedReview);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ReviewResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid ReviewUpdateRequestDTO requestDTO) {
-
-        return ResponseEntity.ok(reviewService.update(id, requestDTO));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        reviewService.delete(id);
-        return ResponseEntity.noContent().build();
+        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(result.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(result);
+        } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(result);
+        }
     }
 }

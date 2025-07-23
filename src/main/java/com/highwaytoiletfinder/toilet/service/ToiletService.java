@@ -69,4 +69,9 @@ public class ToiletService {
 
         toiletRepository.deleteById(id);
     }
+
+    public Toilet findById(UUID id) {
+        return toiletRepository.findById(id)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+    }
 }

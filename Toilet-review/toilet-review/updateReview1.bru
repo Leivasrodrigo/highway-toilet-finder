@@ -1,11 +1,28 @@
 meta {
-  name: updateReview1
+  name: UpdateReview1
   type: http
-  seq: 10
+  seq: 14
 }
 
-patch {
-  url: http://localhost:8080/api/reviews/{{reviewId1}}
-  body: none
+post {
+  url: http://localhost:8080/api/reviews
+  body: json
   auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "command": "update",
+    "id": "{{reviewId2}}",
+    "comment": "A limpeza melhorou.",
+    "ratingGeneral": 3,
+    "ratingCleanliness": 3,
+    "ratingMaintenance": 3,
+    "toiletId": "{{toiletId1}}",
+    "userId": "{{userId1}}"
+  }
 }

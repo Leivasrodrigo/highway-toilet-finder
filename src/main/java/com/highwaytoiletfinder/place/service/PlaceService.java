@@ -53,11 +53,11 @@ public class PlaceService {
         return placeMapper.toResponseDTO(updated);
     }
 
-    public void delete(UUID id) {
-        if (!placeRepository.existsById(id)) {
-            throw new PlaceNotFoundException("Place not found");
-        }
+    public PlaceResponseDTO deletePlace(UUID id) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new PlaceNotFoundException("Place not found with id: " + id));
 
         placeRepository.deleteById(id);
+        return new PlaceResponseDTO();
     }
 }
