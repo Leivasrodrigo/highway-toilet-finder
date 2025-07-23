@@ -2,7 +2,6 @@ package com.highwaytoiletfinder.place.mapper;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
-import com.highwaytoiletfinder.place.dto.request.PlaceRequestDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import lombok.RequiredArgsConstructor;

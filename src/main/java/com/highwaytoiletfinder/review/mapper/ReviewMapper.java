@@ -1,7 +1,6 @@
 package com.highwaytoiletfinder.review.mapper;
 
-import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
-import com.highwaytoiletfinder.review.dto.request.ReviewUpdateRequestDTO;
+import com.highwaytoiletfinder.review.dto.request.ReviewCommandDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.model.Review;
 import com.highwaytoiletfinder.toilet.model.Toilet;
@@ -12,17 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ReviewMapper {
-
-    public Review toEntity(ReviewRequestDTO dto, Toilet toilet, User user) {
-        return Review.builder()
-                .toilet(toilet)
-                .user(user)
-                .ratingGeneral(dto.getRatingGeneral())
-                .ratingCleanliness(dto.getRatingCleanliness())
-                .ratingMaintenance(dto.getRatingMaintenance())
-                .comment(dto.getComment())
-                .build();
-    }
 
     public ReviewResponseDTO toResponseDTO(Review review) {
         return ReviewResponseDTO.builder()
@@ -37,7 +25,8 @@ public class ReviewMapper {
                 .build();
     }
 
-    public void updateEntityFromDTO(ReviewUpdateRequestDTO dto, Review review) {
+
+    public void updateEntityFromCommandDTO(ReviewCommandDTO dto, Review review) {
         if (dto.getRatingGeneral() != null) {
             review.setRatingGeneral(dto.getRatingGeneral());
         }
@@ -51,5 +40,17 @@ public class ReviewMapper {
             String trimmed = dto.getComment().trim();
             review.setComment(trimmed.isEmpty() ? null : trimmed);
         }
+    }
+
+    public Review toEntityFromCommandDTO(ReviewCommandDTO dto, User user, Toilet toilet) {
+        return Review.builder()
+                .id(dto.getId())
+                .ratingGeneral(dto.getRatingGeneral())
+                .ratingCleanliness(dto.getRatingCleanliness())
+                .ratingMaintenance(dto.getRatingMaintenance())
+                .comment(dto.getComment() != null && !dto.getComment().trim().isEmpty() ? dto.getComment().trim() : null)
+                .user(user)
+                .toilet(toilet)
+                .build();
     }
 }
