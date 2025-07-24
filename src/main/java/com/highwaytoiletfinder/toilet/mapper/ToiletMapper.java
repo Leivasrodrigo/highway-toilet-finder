@@ -2,11 +2,9 @@ package com.highwaytoiletfinder.toilet.mapper;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.place.model.Place;
-import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;

@@ -1,14 +1,8 @@
 package com.highwaytoiletfinder.user.mapper;
 
-import com.highwaytoiletfinder.common.enums.Status;
-import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
-import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
-import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
 import com.highwaytoiletfinder.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +17,7 @@ public class UserMapper {
 
     private final ReviewMapper reviewMapper;
 
-    public User toEntity(UserRequestDTO dto) {
+    public User toEntity(UserCommandDTO dto) {
         return User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
@@ -43,15 +37,6 @@ public class UserMapper {
                 .email(user.getEmail())
                 .reviews(reviewDTOs)
                 .build();
-    }
-
-    public void updateEntityFromDTO(UserUpdateRequestDTO dto, User user) {
-        if (dto.getName() != null) {
-            user.setName(dto.getName());
-        }
-        if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
-        }
     }
 
     public void updateEntityFromCommandDTO(UserCommandDTO dto, User user) {
