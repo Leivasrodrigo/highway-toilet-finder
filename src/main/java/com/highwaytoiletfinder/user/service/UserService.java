@@ -1,6 +1,14 @@
 package com.highwaytoiletfinder.user.service;
 
+import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
+import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
+import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
+import com.highwaytoiletfinder.place.model.Place;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
+import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
 import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
 import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
@@ -48,6 +56,31 @@ public class UserService {
         return userMapper.toResponseDTO(savedUser);
     }
 
+    public UserResponseDTO createUser(UserCommandDTO dto) {
+        if (dto.getId() != null) {
+            throw new IllegalArgumentException("ID must not be provided for creation");
+        }
+
+        User user = userMapper.toEntityFromCommandDTO(dto);
+        User saved = userRepository.save(user);
+        return userMapper.toResponseDTO(saved);
+    }
+
+    @Transactional
+    public UserResponseDTO updateUser(UserCommandDTO dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("ID must be provided for update");
+        }
+
+        User existing = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getId()));
+
+        userMapper.updateEntityFromCommandDTO(dto, existing);
+
+        User updated = userRepository.save(existing);
+        return userMapper.toResponseDTO(updated);
+    }
+
     @Transactional
     public UserResponseDTO update(UUID id, UserUpdateRequestDTO dto) {
         User existing = userRepository.findById(id)
@@ -65,12 +98,12 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(UUID id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User not found with id: " + id);
-        }
+    public UserResponseDTO deleteUser(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
         userRepository.deleteById(id);
+        return new UserResponseDTO();
     }
 
     public User findById(UUID id) {

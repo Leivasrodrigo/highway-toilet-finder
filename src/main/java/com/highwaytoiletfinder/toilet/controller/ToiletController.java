@@ -1,11 +1,12 @@
 package com.highwaytoiletfinder.toilet.controller;
 
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
+import com.highwaytoiletfinder.toilet.commandStrategy.ToiletCommandStrategies;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +19,9 @@ import java.util.UUID;
 @RequestMapping("/api/toilets")
 @RequiredArgsConstructor
 public class ToiletController {
+
+    @Autowired
+    private final ToiletCommandStrategies toiletCommandStrategies;
 
     private final ToiletService toiletService;
 
@@ -33,26 +37,20 @@ public class ToiletController {
     }
 
     @PostMapping
-    public ResponseEntity<ToiletResponseDTO> create(@RequestBody @Valid ToiletRequestDTO requestDTO) {
-        ToiletResponseDTO savedToilet = toiletService.save(requestDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedToilet.getId())
-                .toUri();
+    public ResponseEntity<ToiletResponseDTO> create(@RequestBody @Valid ToiletCommandDTO commandDTO) {
+        ToiletResponseDTO result = toiletCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        return ResponseEntity.created(location).body(savedToilet);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ToiletResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid ToiletUpdateRequestDTO requestDTO) {
-
-        return ResponseEntity.ok(toiletService.update(id, requestDTO));
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        toiletService.delete(id);
-        return ResponseEntity.noContent().build();
+        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(result.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(result);
+        } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(result);
+        }
     }
 }

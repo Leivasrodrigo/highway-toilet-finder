@@ -1,7 +1,12 @@
 package com.highwaytoiletfinder.user.mapper;
 
+import com.highwaytoiletfinder.common.enums.Status;
+import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
+import com.highwaytoiletfinder.toilet.model.Toilet;
+import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
 import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
 import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
@@ -47,6 +52,18 @@ public class UserMapper {
         if (dto.getEmail() != null) {
             user.setEmail(dto.getEmail());
         }
+    }
+
+    public void updateEntityFromCommandDTO(UserCommandDTO dto, User user) {
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getName() != null) user.setName(dto.getName());
+    }
+
+    public User toEntityFromCommandDTO(UserCommandDTO dto) {
+        return User.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .build();
     }
 }
 

@@ -1,7 +1,7 @@
 meta {
-  name: CreateUser1
+  name: UpdateUser1
   type: http
-  seq: 6
+  seq: 7
 }
 
 post {
@@ -12,10 +12,9 @@ post {
 
 body:json {
   {
-    "command": "create",
-    "name": "Maria Souza",
-    "email": "maria.souza@example.com",
-    "password": "senhaSegura123"
+    "command": "update",
+    "id": "{{userId1}}",
+    "name": "Maria Souza da Silva"
   }
 }
 

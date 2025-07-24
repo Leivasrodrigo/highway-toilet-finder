@@ -1,13 +1,12 @@
 package com.highwaytoiletfinder.toilet.mapper;
 
 import com.highwaytoiletfinder.common.enums.Status;
-import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.mapper.ReviewMapper;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;
@@ -23,17 +22,6 @@ public class ToiletMapper {
 
     private final PlaceMapper placeMapper;
     private final ReviewMapper reviewMapper;
-
-    public Toilet toEntity(ToiletRequestDTO dto, Place place) {
-        return Toilet.builder()
-                .place(place)
-                .gender(dto.getGender())
-                .hasAccessible(dto.getHasAccessible())
-                .hasBabyChanger(dto.getHasBabyChanger())
-                .hasShower(dto.getHasShower())
-                .status(Status.PENDING)
-                .build();
-    }
 
     public ToiletResponseDTO toResponseDTO(Toilet toilet) {
         List<ReviewResponseDTO> reviewDTOs = Optional.ofNullable(toilet.getReviews())
@@ -56,27 +44,22 @@ public class ToiletMapper {
                 .build();
     }
 
-    public void updateEntityFromDTO(ToiletUpdateRequestDTO dto, Toilet toilet, PlaceRepository placeRepository) {
-        if (dto.getGender() != toilet.getGender()) {
-            toilet.setGender(dto.getGender());
-        }
+    public void updateEntityFromCommandDTO(ToiletCommandDTO dto, Toilet toilet) {
+        if (dto.getGender() != null) toilet.setGender(dto.getGender());
+        if (dto.getHasShower() != null) toilet.setHasShower(dto.getHasShower());
+        if (dto.getHasAccessible() != null) toilet.setHasAccessible(dto.getHasAccessible());
+        if (dto.getHasBabyChanger() != null) toilet.setHasBabyChanger(dto.getHasBabyChanger());
+        if (dto.getStatus() != null) toilet.setStatus(dto.getStatus());
+    }
 
-        if (dto.getHasShower() != null) {
-            toilet.setHasShower(dto.getHasShower());
-        }
-
-        if (dto.getHasAccessible() != null) {
-            toilet.setHasAccessible(dto.getHasAccessible());
-        }
-
-        if (dto.getHasBabyChanger() != null) {
-            toilet.setHasBabyChanger(dto.getHasBabyChanger());
-        }
-
-        if (dto.getPlaceId() != null) {
-            Place place = placeRepository.findById(dto.getPlaceId())
-                    .orElseThrow(() -> new PlaceNotFoundException("Place not found"));
-            toilet.setPlace(place);
-        }
+    public Toilet toEntityFromCommandDTO(ToiletCommandDTO dto, Place place) {
+        return Toilet.builder()
+                .gender(dto.getGender())
+                .hasShower(dto.getHasShower())
+                .hasBabyChanger(dto.getHasBabyChanger())
+                .hasAccessible(dto.getHasAccessible())
+                .status(dto.getStatus() != null ? dto.getStatus() : Status.PENDING)
+                .place(place)
+                .build();
     }
 }

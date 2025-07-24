@@ -1,7 +1,7 @@
 meta {
-  name: CreateToilet2
+  name: DeleteToilet1
   type: http
-  seq: 13
+  seq: 12
 }
 
 post {
@@ -16,8 +16,9 @@ headers {
 
 body:json {
   {
-    "placeId": "{{placeId2}}",
-    "gender": "UNISEX",
+    "command": "update",
+    "id": "{{toiletId1}}",
+    "gender": "FEMALE",
     "hasAccessible": true,
     "hasBabyChanger": false,
     "hasShower": true
@@ -25,5 +26,5 @@ body:json {
 }
 
 script:post-response {
-  bru.setEnvVar("toiletId2", res.getBody().id);
+  bru.setEnvVar("toiletId1", res.getBody().id);
 }
