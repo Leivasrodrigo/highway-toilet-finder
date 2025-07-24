@@ -1,13 +1,17 @@
 package com.highwaytoiletfinder.user.controller;
 
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
-import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
+import com.highwaytoiletfinder.place.commandStrategy.PlaceCommandStrategies;
+import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
+import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
+import com.highwaytoiletfinder.user.commandStrategy.UserCommandStrategies;
+import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
 import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
 import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
 import com.highwaytoiletfinder.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +25,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
 
+    @Autowired
+    private final UserCommandStrategies userCommandStrategies;
     private final UserService userService;
 
     @GetMapping
@@ -35,26 +41,26 @@ public class UserController {
         }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserRequestDTO requestDTO) {
-        UserResponseDTO savedUser = userService.save(requestDTO);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedUser.getId())
-                .toUri();
+    public ResponseEntity<UserResponseDTO> handlePlaceCommand(@RequestBody @Valid UserCommandDTO commandDTO) {
+        UserResponseDTO result = userCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        return ResponseEntity.created(location).body(savedUser);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid UserUpdateRequestDTO requestDTO) {
-
-        return ResponseEntity.ok(userService.update(id, requestDTO));
+        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(result.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(result);
+        } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(result);
+        }
     }
 
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        userService.delete(id);
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }

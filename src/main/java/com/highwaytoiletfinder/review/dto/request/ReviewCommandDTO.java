@@ -16,7 +16,7 @@ public class ReviewCommandDTO {
 
     private UUID id;
 
-    @NotBlank(message = "command is required and must be 'create' or 'update'")
+    @NotBlank(message = "command is required and must be 'create', 'update' or 'update'")
     private String command;
 
     private UUID toiletId;

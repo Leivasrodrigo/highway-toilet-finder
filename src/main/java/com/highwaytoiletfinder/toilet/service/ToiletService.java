@@ -2,8 +2,11 @@ package com.highwaytoiletfinder.toilet.service;
 
 import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
+import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.place.service.PlaceService;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
@@ -15,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ToiletService {
+    private final PlaceService placeService;
     private final ToiletMapper toiletMapper;
     private final ToiletRepository toiletRepository;
     private final PlaceRepository placeRepository;
@@ -37,37 +40,41 @@ public class ToiletService {
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
     }
 
-    @Transactional
-    public ToiletResponseDTO save(ToiletRequestDTO dto) {
-        UUID placeId = dto.getPlaceId();
+    public ToiletResponseDTO createToilet(ToiletCommandDTO dto) {
+        if (dto.getId() != null) {
+            throw new IllegalArgumentException("ID must not be provided for creation");
+        }
 
-        Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new RuntimeException("Place not found with id: " + placeId));
+        Place place = placeService.findById(dto.getPlaceId());
 
-        Toilet toilet = toiletMapper.toEntity(dto, place);
+        Toilet toilet = toiletMapper.toEntityFromCommandDTO(dto, place);
         Toilet saved = toiletRepository.save(toilet);
 
         return toiletMapper.toResponseDTO(saved);
     }
 
     @Transactional
-    public ToiletResponseDTO update(UUID id, ToiletUpdateRequestDTO dto) {
-        Toilet existing = toiletRepository.findById(id)
-                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+    public ToiletResponseDTO updateToilet(ToiletCommandDTO dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("ID must be provided for update");
+        }
 
-        toiletMapper.updateEntityFromDTO(dto, existing, placeRepository);
+        Toilet existing = toiletRepository.findById(dto.getId())
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + dto.getId()));
+
+        toiletMapper.updateEntityFromCommandDTO(dto, existing);
 
         Toilet updated = toiletRepository.save(existing);
         return toiletMapper.toResponseDTO(updated);
     }
 
     @Transactional
-    public void delete(UUID id) {
-        if (!toiletRepository.existsById(id)) {
-            throw new ToiletNotFoundException("Toilet not found with id: " + id);
-        }
+    public ToiletResponseDTO deleteToilet(UUID id) {
+        Toilet toilet = toiletRepository.findById(id)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
 
         toiletRepository.deleteById(id);
+        return new ToiletResponseDTO();
     }
 
     public Toilet findById(UUID id) {

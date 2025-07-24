@@ -14,7 +14,7 @@ public class DeletePlaceStrategy implements PlaceCommandStrategy {
 
     @Override
     public boolean supports(String command) {
-        return "deleteReview".equalsIgnoreCase(command);
+        return "delete".equalsIgnoreCase(command);
     }
 
     @Override
