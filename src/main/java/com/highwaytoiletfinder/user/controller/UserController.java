@@ -1,12 +1,7 @@
 package com.highwaytoiletfinder.user.controller;
 
-import com.highwaytoiletfinder.place.commandStrategy.PlaceCommandStrategies;
-import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
-import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.user.commandStrategy.UserCommandStrategies;
 import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
-import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
-import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
 import com.highwaytoiletfinder.user.service.UserService;
 import jakarta.validation.Valid;

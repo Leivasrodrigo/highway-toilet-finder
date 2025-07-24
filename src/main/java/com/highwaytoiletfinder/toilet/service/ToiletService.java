@@ -1,14 +1,10 @@
 package com.highwaytoiletfinder.toilet.service;
 
-import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
-import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.place.service.PlaceService;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletUpdateRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;

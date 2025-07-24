@@ -1,16 +1,7 @@
 package com.highwaytoiletfinder.user.service;
 
-import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
-import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
-import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
-import com.highwaytoiletfinder.place.model.Place;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
-import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
-import com.highwaytoiletfinder.user.dto.request.UserRequestDTO;
-import com.highwaytoiletfinder.user.dto.request.UserUpdateRequestDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
 import com.highwaytoiletfinder.user.mapper.UserMapper;
 import com.highwaytoiletfinder.user.model.User;
@@ -44,18 +35,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
-    @Transactional
-    public UserResponseDTO save(UserRequestDTO dto) {
-        User user = userMapper.toEntity(dto);
-
-        String passwordHash = passwordEncoder.encode(dto.getPassword());
-        user.setPasswordHash(passwordHash);
-
-        User savedUser = userRepository.save(user);
-
-        return userMapper.toResponseDTO(savedUser);
-    }
-
     public UserResponseDTO createUser(UserCommandDTO dto) {
         if (dto.getId() != null) {
             throw new IllegalArgumentException("ID must not be provided for creation");
@@ -76,22 +55,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getId()));
 
         userMapper.updateEntityFromCommandDTO(dto, existing);
-
-        User updated = userRepository.save(existing);
-        return userMapper.toResponseDTO(updated);
-    }
-
-    @Transactional
-    public UserResponseDTO update(UUID id, UserUpdateRequestDTO dto) {
-        User existing = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
-
-        userMapper.updateEntityFromDTO(dto, existing);
-
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            String hashedPassword = passwordEncoder.encode(dto.getPassword());
-            existing.setPasswordHash(hashedPassword);
-        }
 
         User updated = userRepository.save(existing);
         return userMapper.toResponseDTO(updated);
