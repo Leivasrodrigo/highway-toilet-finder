@@ -4,6 +4,9 @@ import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.place.service.PlaceService;
+import com.highwaytoiletfinder.toilet.commandStrategy.ToiletCommandStrategies;
+import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.enums.Gender;
@@ -23,22 +26,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 public class ToiletServiceTest {
 
     @Mock
-    PlaceRepository placeRepository;
+    private PlaceService placeService;
 
     @Mock
     private ToiletRepository toiletRepository;
 
     @Mock
     private ToiletMapper toiletMapper;
+
+    @Mock
+    private PlaceRepository placeRepository;
 
     @InjectMocks
     private ToiletService toiletService;
@@ -194,22 +201,21 @@ public class ToiletServiceTest {
         when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));
         when(toiletMapper.toResponseDTO(toilet)).thenReturn(responseDTO);
 
-        Optional<ToiletResponseDTO> result = toiletService.getById(toiletId);
+        ToiletResponseDTO result = toiletService.getById(toiletId);
 
-        assertTrue(result.isPresent(), "Expected Optional to be present");
-        assertEquals(toiletId, result.get().getId());
+        assertEquals(toiletId, result.getId());
         verify(toiletRepository).findById(toiletId);
     }
 
     @Test
-    void save_shouldReturnCreatedToilet() {
+    void createToilet_shouldCreateAndReturnToilet() {
         UUID placeId = UUID.randomUUID();
-        ToiletRequestDTO requestDTO = new ToiletRequestDTO();
-        requestDTO.setPlaceId(placeId);
-        requestDTO.setGender(Gender.UNISEX);
-        requestDTO.setHasAccessible(true);
-        requestDTO.setHasBabyChanger(false);
-        requestDTO.setHasShower(true);
+        ToiletCommandDTO dto = new ToiletCommandDTO();
+        dto.setPlaceId(placeId);
+        dto.setGender(Gender.UNISEX);
+        dto.setHasAccessible(true);
+        dto.setHasBabyChanger(false);
+        dto.setHasShower(true);
 
         Place place = new Place();
         place.setId(placeId);
@@ -220,12 +226,12 @@ public class ToiletServiceTest {
         place.setGooglePlaceId("some-google-place-id");
         place.setStatus(Status.APPROVED);
 
-        Toilet toiletEntityToSave = new Toilet();
-        toiletEntityToSave.setPlace(place);
-        toiletEntityToSave.setGender(Gender.UNISEX);
-        toiletEntityToSave.setHasAccessible(true);
-        toiletEntityToSave.setHasBabyChanger(false);
-        toiletEntityToSave.setHasShower(true);
+        Toilet toiletToSave = new Toilet();
+        toiletToSave.setPlace(place);
+        toiletToSave.setGender(Gender.UNISEX);
+        toiletToSave.setHasAccessible(true);
+        toiletToSave.setHasBabyChanger(false);
+        toiletToSave.setHasShower(true);
 
         UUID toiletId = UUID.randomUUID();
         Toilet savedToilet = new Toilet();
@@ -255,20 +261,114 @@ public class ToiletServiceTest {
         responseDTO.setHasShower(true);
         responseDTO.setStatus(Status.PENDING);
 
-        when(placeRepository.findById(placeId)).thenReturn(Optional.of(place));
-        when(toiletMapper.toEntity(requestDTO, place)).thenReturn(toiletEntityToSave);
-        when(toiletRepository.save(toiletEntityToSave)).thenReturn(savedToilet);
+        when(placeService.findById(placeId)).thenReturn(place);
+        when(toiletMapper.toEntityFromCommandDTO(dto, place)).thenReturn(toiletToSave);
+        when(toiletRepository.save(toiletToSave)).thenReturn(savedToilet);
         when(toiletMapper.toResponseDTO(savedToilet)).thenReturn(responseDTO);
 
-        ToiletResponseDTO result = toiletService.save(requestDTO);
+        ToiletResponseDTO result = toiletService.createToilet(dto);
 
         assertEquals(toiletId, result.getId());
         assertEquals(Gender.UNISEX, result.getGender());
         assertEquals("Posto A", result.getPlace().getName());
 
-        verify(placeRepository).findById(placeId);
-        verify(toiletRepository).save(toiletEntityToSave);
-        verify(toiletMapper).toEntity(requestDTO, place);
+        verify(placeService).findById(placeId);
+        verify(toiletMapper).toEntityFromCommandDTO(dto, place);
+        verify(toiletRepository).save(toiletToSave);
         verify(toiletMapper).toResponseDTO(savedToilet);
+    }
+
+    @Test
+    void updateToilet_shouldUpdateAndReturnToilet() {
+        UUID toiletId = UUID.randomUUID();
+        UUID placeId = UUID.randomUUID();
+
+        ToiletCommandDTO dto = new ToiletCommandDTO();
+        dto.setId(toiletId);
+        dto.setPlaceId(placeId);
+        dto.setGender(Gender.FEMALE);
+        dto.setHasAccessible(false);
+        dto.setHasBabyChanger(true);
+        dto.setHasShower(false);
+
+        Toilet existing = new Toilet();
+        existing.setId(toiletId);
+
+        Toilet updated = new Toilet();
+        updated.setId(toiletId);
+        updated.setGender(Gender.FEMALE);
+        updated.setHasAccessible(false);
+        updated.setHasBabyChanger(true);
+        updated.setHasShower(false);
+        updated.setStatus(Status.APPROVED);
+
+        Place place = new Place();
+        place.setId(placeId);
+        place.setName("Posto Updated");
+        place.setAddress("Rua Updated, 100");
+        place.setLatitude(-28.0);
+        place.setLongitude(-49.0);
+        place.setGooglePlaceId("google-updated");
+        place.setStatus(Status.APPROVED);
+
+        PlaceResponseDTO placeDTO = new PlaceResponseDTO();
+        placeDTO.setId(placeId);
+        placeDTO.setName("Posto Updated");
+        placeDTO.setAddress("Rua Updated, 100");
+        placeDTO.setLatitude(-28.0);
+        placeDTO.setLongitude(-49.0);
+        placeDTO.setGooglePlaceId("google-updated");
+        placeDTO.setStatus(Status.APPROVED);
+
+        ToiletResponseDTO responseDTO = new ToiletResponseDTO();
+        responseDTO.setId(toiletId);
+        responseDTO.setPlace(placeDTO);
+        responseDTO.setGender(Gender.FEMALE);
+        responseDTO.setHasAccessible(false);
+        responseDTO.setHasBabyChanger(true);
+        responseDTO.setHasShower(false);
+        responseDTO.setStatus(Status.APPROVED);
+
+        when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(existing));
+        doAnswer(invocation -> {
+            ToiletCommandDTO dtoArg = invocation.getArgument(0);
+            Toilet entityArg = invocation.getArgument(1);
+            entityArg.setGender(dtoArg.getGender());
+            entityArg.setHasAccessible(dtoArg.getHasAccessible());
+            entityArg.setHasBabyChanger(dtoArg.getHasBabyChanger());
+            entityArg.setHasShower(dtoArg.getHasShower());
+            return null;
+        }).when(toiletMapper).updateEntityFromCommandDTO(dto, existing);
+
+        when(toiletRepository.save(existing)).thenReturn(updated);
+        when(toiletMapper.toResponseDTO(updated)).thenReturn(responseDTO);
+
+        ToiletResponseDTO result = toiletService.updateToilet(dto);
+
+        assertEquals(toiletId, result.getId());
+        assertEquals(Gender.FEMALE, result.getGender());
+        assertEquals("Posto Updated", result.getPlace().getName());
+
+        verify(toiletRepository).findById(toiletId);
+        verify(toiletMapper).updateEntityFromCommandDTO(dto, existing);
+        verify(toiletRepository).save(existing);
+        verify(toiletMapper).toResponseDTO(updated);
+    }
+
+    @Test
+    void deleteToilet_shouldDeleteAndReturnEmptyResponse() {
+        UUID toiletId = UUID.randomUUID();
+
+        Toilet toilet = new Toilet();
+        toilet.setId(toiletId);
+
+        when(toiletRepository.findById(toiletId)).thenReturn(Optional.of(toilet));
+        doNothing().when(toiletRepository).deleteById(toiletId);
+
+        ToiletResponseDTO result = toiletService.deleteToilet(toiletId);
+
+        assertNotNull(result);
+        verify(toiletRepository).findById(toiletId);
+        verify(toiletRepository).deleteById(toiletId);
     }
 }

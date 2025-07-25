@@ -12,16 +12,7 @@ post {
 
 body:json {
   {
-    "command": "create",
-    "name": "Auto Posto BR - Rodovia",
-    "latitude": -23.545123,
-    "longitude": -46.633456,
-    "address": "Rod. dos Bandeirantes, Km 28, Jundiaí - SP",
-    "city": "Jundiaí",
-    "state": "SP"
+    "command": "delete",
+    "id": "{{placeId1}}"
   }
-}
-
-script:post-response {
-  bru.setEnvVar("placeId1", res.getBody().id);
 }

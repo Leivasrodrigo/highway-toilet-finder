@@ -1,23 +1,26 @@
 package com.highwaytoiletfinder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.highwaytoiletfinder.review.dto.request.ReviewRequestDTO;
+import com.highwaytoiletfinder.review.commandStrategy.ReviewCommandStrategies;
+import com.highwaytoiletfinder.review.dto.request.ReviewCommandDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
-import com.highwaytoiletfinder.review.model.Review;
 import com.highwaytoiletfinder.review.controller.ReviewController;
 import com.highwaytoiletfinder.review.service.ReviewService;
-import com.highwaytoiletfinder.toilet.enums.Gender;
-import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.user.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.time.Instant;
@@ -30,19 +33,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReviewController.class)
 public class ReviewControllerTest {
-    @Autowired
+
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private ReviewService reviewService;
 
-    @Autowired
+    @Mock
+    private ReviewCommandStrategies reviewCommandStrategies;
+
+    @InjectMocks
+    private ReviewController reviewController;
+
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(reviewController).build();
         objectMapper = new ObjectMapper();
     }
 
@@ -62,41 +71,15 @@ public class ReviewControllerTest {
         user2.setName("Getulio Pereira");
         user2.setEmail("getulio.pereira@example.com");
 
-        Review review1 = new Review();
-        review1.setId(UUID.randomUUID());
-        review1.setUser(user1);
-        review1.setRatingGeneral(4);
-        review1.setRatingCleanliness(3);
-        review1.setRatingMaintenance(5);
-        review1.setComment("Limpeza razoável, mas bem conservado.");
-        review1.setCreatedAt(Instant.now());
-
-        Review review2 = new Review();
-        review2.setId(UUID.randomUUID());
-        review2.setUser(user2);
-        review2.setRatingGeneral(5);
-        review2.setRatingCleanliness(5);
-        review2.setRatingMaintenance(5);
-        review2.setComment("Excelente!");
-        review2.setCreatedAt(Instant.now());
-
-        Toilet toilet = new Toilet();
-        toilet.setId(toiletId);
-        toilet.setGender(Gender.MALE);
-        toilet.setReviews(List.of(review1, review2));
-
-        review1.setToilet(toilet);
-        review2.setToilet(toilet);
-
         ReviewResponseDTO response1 = new ReviewResponseDTO();
-        response1.setId(review1.getId());
+        response1.setId(UUID.randomUUID());
         response1.setUserId(userId1);
         response1.setUserName("John Doe");
         response1.setRatingGeneral(4);
         response1.setComment("Limpeza razoável, mas bem conservado.");
 
         ReviewResponseDTO response2 = new ReviewResponseDTO();
-        response2.setId(review2.getId());
+        response2.setId(UUID.randomUUID());
         response2.setUserId(userId2);
         response2.setUserName("Getulio Pereira");
         response2.setRatingGeneral(5);
@@ -115,37 +98,17 @@ public class ReviewControllerTest {
 
     @Test
     void getById_shouldReturnSpecificReview() throws Exception {
-        UUID toiletId = UUID.randomUUID();
         UUID reviewId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
 
-        User user = new User();
-        user.setId(userId);
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-
-        Toilet toilet = new Toilet();
-        toilet.setId(toiletId);
-        toilet.setGender(Gender.MALE);
-
-        Review review = new Review();
-        review.setId(reviewId);
-        review.setToilet(toilet);
-        review.setUser(user);
-        review.setRatingGeneral(4);
-        review.setRatingCleanliness(3);
-        review.setRatingMaintenance(5);
-        review.setComment("Limpeza razoável, mas bem conservado.");
-        review.setCreatedAt(Instant.now());
-
         ReviewResponseDTO response = new ReviewResponseDTO();
-        response.setId(review.getId());
+        response.setId(reviewId);
         response.setUserId(userId);
         response.setUserName("John Doe");
         response.setRatingGeneral(4);
         response.setComment("Limpeza razoável, mas bem conservado.");
 
-        when(reviewService.getById(reviewId)).thenReturn(Optional.of(response));
+        when(reviewService.getById(reviewId)).thenReturn(response);
 
         mockMvc.perform(get("/api/reviews/" + reviewId))
                 .andExpect(status().isOk())
@@ -160,35 +123,8 @@ public class ReviewControllerTest {
         UUID reviewId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
 
-        User user = new User();
-        user.setId(userId);
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-
-        Toilet toilet = new Toilet();
-        toilet.setId(toiletId);
-        toilet.setGender(Gender.MALE);
-
-        Review review = new Review();
-        review.setId(reviewId);
-        review.setToilet(toilet);
-        review.setUser(user);
-        review.setRatingGeneral(4);
-        review.setRatingCleanliness(3);
-        review.setRatingMaintenance(5);
-        review.setComment("Limpeza razoável, mas bem conservado.");
-        review.setCreatedAt(Instant.now());
-
-        ReviewResponseDTO responseDTO = new ReviewResponseDTO();
-        responseDTO.setId(review.getId());
-        responseDTO.setUserId(userId);
-        responseDTO.setUserName("John Doe");
-        responseDTO.setRatingGeneral(4);
-        responseDTO.setRatingCleanliness(3);
-        responseDTO.setRatingMaintenance(5);
-        responseDTO.setComment("Limpeza razoável, mas bem conservado.");
-
-        ReviewRequestDTO requestDTO = new ReviewRequestDTO();
+        ReviewCommandDTO requestDTO = new ReviewCommandDTO();
+        requestDTO.setCommand("create");
         requestDTO.setUserId(userId);
         requestDTO.setToiletId(toiletId);
         requestDTO.setRatingGeneral(4);
@@ -196,9 +132,18 @@ public class ReviewControllerTest {
         requestDTO.setRatingMaintenance(5);
         requestDTO.setComment("Limpeza razoável, mas bem conservado.");
 
+        ReviewResponseDTO responseDTO = new ReviewResponseDTO();
+        responseDTO.setId(reviewId);
+        responseDTO.setUserId(userId);
+        responseDTO.setUserName("John Doe");
+        responseDTO.setRatingGeneral(4);
+        responseDTO.setRatingCleanliness(3);
+        responseDTO.setRatingMaintenance(5);
+        responseDTO.setComment("Limpeza razoável, mas bem conservado.");
+
         String json = objectMapper.writeValueAsString(requestDTO);
 
-        when(reviewService.save(any(ReviewRequestDTO.class))).thenReturn(responseDTO);
+        when(reviewCommandStrategies.execute(eq("create"), any(ReviewCommandDTO.class))).thenReturn(responseDTO);
 
         mockMvc.perform(post("/api/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -208,5 +153,62 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.ratingCleanliness").value(3))
                 .andExpect(jsonPath("$.ratingMaintenance").value(5))
                 .andExpect(jsonPath("$.comment").value("Limpeza razoável, mas bem conservado."));
+    }
+
+    @Test
+    void update_shouldReturnUpdatedReview() throws Exception {
+        UUID reviewId = UUID.randomUUID();
+        UUID toiletId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+
+        ReviewCommandDTO requestDTO = new ReviewCommandDTO();
+        requestDTO.setCommand("update");
+        requestDTO.setId(reviewId);
+        requestDTO.setUserId(userId);
+        requestDTO.setToiletId(toiletId);
+        requestDTO.setRatingGeneral(5);
+        requestDTO.setRatingCleanliness(4);
+        requestDTO.setRatingMaintenance(5);
+        requestDTO.setComment("Atualizado.");
+
+        ReviewResponseDTO responseDTO = new ReviewResponseDTO();
+        responseDTO.setId(reviewId);
+        responseDTO.setUserId(userId);
+        responseDTO.setUserName("John Doe");
+        responseDTO.setRatingGeneral(5);
+        responseDTO.setRatingCleanliness(4);
+        responseDTO.setRatingMaintenance(5);
+        responseDTO.setComment("Atualizado.");
+
+        String json = objectMapper.writeValueAsString(requestDTO);
+
+        when(reviewCommandStrategies.execute(eq("update"), any(ReviewCommandDTO.class))).thenReturn(responseDTO);
+
+        mockMvc.perform(post("/api/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ratingGeneral").value(5))
+                .andExpect(jsonPath("$.ratingCleanliness").value(4))
+                .andExpect(jsonPath("$.ratingMaintenance").value(5))
+                .andExpect(jsonPath("$.comment").value("Atualizado."));
+    }
+
+    @Test
+    void delete_shouldReturnNoContent() throws Exception {
+        UUID reviewId = UUID.randomUUID();
+
+        ReviewCommandDTO requestDTO = new ReviewCommandDTO();
+        requestDTO.setCommand("delete");
+        requestDTO.setId(reviewId);
+
+        String json = objectMapper.writeValueAsString(requestDTO);
+
+        when(reviewCommandStrategies.execute(eq("delete"), any(ReviewCommandDTO.class))).thenReturn(null);
+
+        mockMvc.perform(post("/api/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNoContent());
     }
 }

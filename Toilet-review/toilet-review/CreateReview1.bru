@@ -16,6 +16,7 @@ headers {
 
 body:json {
   {
+    "command": "create",
     "toiletId": "{{toiletId1}}",
     "userId": "{{userId1}}",
     "ratingGeneral": 4,
@@ -23,4 +24,8 @@ body:json {
     "ratingMaintenance": 5,
     "comment": "Limpeza razoável, mas bem conservado."
   }
+}
+
+script:post-response {
+  bru.setEnvVar("reviewId2", res.getBody().id);
 }
