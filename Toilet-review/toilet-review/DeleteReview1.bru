@@ -1,0 +1,22 @@
+meta {
+  name: DeleteReview1
+  type: http
+  seq: 16
+}
+
+post {
+  url: http://localhost:8080/api/reviews
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "command": "delete",
+    "id": "{{reviewId2}}"
+  }
+}
