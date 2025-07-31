@@ -1,0 +1,20 @@
+meta {
+  name: PlaceImportGasStation
+  type: http
+  seq: 26
+}
+
+post {
+  url: http://localhost:8080/api/placeimport/import
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "location": "-30.0605,-51.2417",
+    "radius": 3000,
+    "keyword": "posto",
+    "type": "gas_station"
+  }
+}

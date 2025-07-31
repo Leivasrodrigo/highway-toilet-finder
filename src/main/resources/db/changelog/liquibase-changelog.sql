@@ -8,7 +8,8 @@ CREATE TABLE places (
     address VARCHAR(255),
     latitude DOUBLE,
     longitude DOUBLE,
-    google_place_id VARCHAR(255)
+    google_place_id VARCHAR(255),
+    CONSTRAINT uk_google_place_id UNIQUE (google_place_id)
 );
 
 -- changeset rodrigo:create-users-table
