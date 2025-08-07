@@ -41,6 +41,12 @@ public class UserService {
         }
 
         User user = userMapper.toEntityFromCommandDTO(dto);
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()){
+            user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            throw new IllegalArgumentException("Password must be provided for creation");
+        }
+
         User saved = userRepository.save(user);
         return userMapper.toResponseDTO(saved);
     }
