@@ -67,6 +67,33 @@ public class UserService {
     }
 
     @Transactional
+    public UserResponseDTO updatePassword(UserCommandDTO dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("ID must be provided for update");
+        }
+
+        User user = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getId()));
+
+        if (dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()) {
+            throw new IllegalArgumentException("Current password must be provided for verification");
+        }
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+            throw new IllegalArgumentException("New password must be provided");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        User updated = userRepository.save(user);
+
+        return userMapper.toResponseDTO(updated);
+    }
+
+    @Transactional
     public UserResponseDTO deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));

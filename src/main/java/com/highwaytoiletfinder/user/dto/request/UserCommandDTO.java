@@ -22,4 +22,6 @@ public class UserCommandDTO {
     private String email;
 
     private String password;
+
+    private String currentPassword;
 }
