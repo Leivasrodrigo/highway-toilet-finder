@@ -17,13 +17,6 @@ public class UserMapper {
 
     private final ReviewMapper reviewMapper;
 
-    public User toEntity(UserCommandDTO dto) {
-        return User.builder()
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .build();
-    }
-
     public UserResponseDTO toResponseDTO(User user) {
         List<ReviewResponseDTO> reviewDTOs = Optional.ofNullable(user.getReviews())
                 .orElse(List.of())
