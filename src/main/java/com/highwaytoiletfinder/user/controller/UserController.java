@@ -36,17 +36,10 @@ public class UserController {
         }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> handlePlaceCommand(@RequestBody @Valid UserCommandDTO commandDTO) {
+    public ResponseEntity<UserResponseDTO> handleUserCommand(@RequestBody @Valid UserCommandDTO commandDTO) {
         UserResponseDTO result = userCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(result.getId())
-                    .toUri();
-            return ResponseEntity.created(location).body(result);
-        } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
+        if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(result);
