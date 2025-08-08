@@ -1,0 +1,24 @@
+meta {
+  name: LoginUser1
+  type: http
+  seq: 9
+}
+
+post {
+  url: //localhost:8080/api/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "command": "update",
+    "id": "{{userId1}}",
+    "name": "Maria Souza da Silva"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("userId1", res.getBody().id);
+  
+}

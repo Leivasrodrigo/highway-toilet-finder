@@ -35,22 +35,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
-    public UserResponseDTO createUser(UserCommandDTO dto) {
-        if (dto.getId() != null) {
-            throw new IllegalArgumentException("ID must not be provided for creation");
-        }
-
-        User user = userMapper.toEntityFromCommandDTO(dto);
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()){
-            user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
-        } else {
-            throw new IllegalArgumentException("Password must be provided for creation");
-        }
-
-        User saved = userRepository.save(user);
-        return userMapper.toResponseDTO(saved);
-    }
-
     @Transactional
     public UserResponseDTO updateUser(UserCommandDTO dto) {
         if (dto.getId() == null) {

@@ -1,20 +1,21 @@
 meta {
   name: CreateUser2
   type: http
-  seq: 10
+  seq: 11
 }
 
 post {
-  url: //localhost:8080/api/users
+  url: //localhost:8080/auth
   body: json
   auth: none
 }
 
 body:json {
   {
+    "command": "register",
     "name": "Getulio Pereira",
     "email": "pereira.getulio@example.com",
-    "password": "senhaSegura456"
+    "password": "senhaSegura123"
   }
 }
 

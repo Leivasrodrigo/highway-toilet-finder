@@ -53,6 +53,11 @@ public class ReviewService {
         User user = userService.findById(dto.getUserId());
         Toilet toilet = toiletService.findById(dto.getToiletId());
 
+        boolean alreadyExists = reviewRepository.existsByUserIdAndToiletId(user.getId(), toilet.getId());
+        if (alreadyExists) {
+            throw new IllegalStateException("User has already submitted a review for this toilet.");
+        }
+
         Review review = reviewMapper.toEntityFromCommandDTO(dto, user, toilet);
         review.setCreatedAt(Instant.now());
         Review saved = reviewRepository.save(review);
