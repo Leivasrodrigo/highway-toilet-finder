@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: //localhost:8080/api/users
+  url: //localhost:8080/auth/user
   body: json
   auth: none
 }
 
 body:json {
   {
-    "command": "create",
+    "command": "register",
     "name": "Maria Souza",
     "email": "maria.souza@example.com",
     "password": "senhaSegura123"
