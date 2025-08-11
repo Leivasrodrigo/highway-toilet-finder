@@ -23,7 +23,7 @@ public class AuthController {
     public ResponseEntity<AuthResponseDTO> handleAuthCommand(@RequestBody AuthRequestDTO commandDTO) {
         AuthResponseDTO result = authCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        if ("create".equalsIgnoreCase(commandDTO.getCommand()) && result.getId() != null) {
+        if ("register".equalsIgnoreCase(commandDTO.getCommand()) && result.getId() != null) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/api/users/{id}")
