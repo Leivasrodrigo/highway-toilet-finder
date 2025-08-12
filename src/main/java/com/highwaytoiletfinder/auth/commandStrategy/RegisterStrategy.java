@@ -18,7 +18,7 @@ public class RegisterStrategy implements AuthCommandStrategy {
 
     @Override
     public boolean supports(String command) {
-        return "create".equalsIgnoreCase(command) || "register".equalsIgnoreCase(command);
+        return "register".equalsIgnoreCase(command);
     }
 
     @Override

@@ -25,6 +25,7 @@ public class PlaceService {
 
     public List<PlaceResponseDTO> getAll() {
         List<Place> places = placeRepository.findAll();
+        System.out.println("Total places in DB: " + places.size());
         return places.stream()
                 .map(placeMapper::toResponseDTO)
                 .toList();

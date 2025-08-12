@@ -16,7 +16,7 @@ CREATE TABLE places (
 CREATE TABLE users (
     id BINARY(16) PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE toilets (
     avg_rating DOUBLE,
     total_reviews INT,
     place_id BINARY(16),
-    CONSTRAINT fk_toilet_place FOREIGN KEY (place_id) REFERENCES places(id)
+    CONSTRAINT fk_toilet_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
 );
 
 -- changeset rodrigo:create-review-table
@@ -47,4 +47,14 @@ CREATE TABLE reviews (
     created_at TIMESTAMP,
     CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id),
     CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- changeset rodrigo:create-refresh-token-table
+CREATE TABLE refresh_token (
+    id BINARY(16) PRIMARY KEY,
+    token VARCHAR(255) NOT NULL,
+    expiry_date TIMESTAMP NOT NULL,
+    user_id BINARY(16) NOT NULL,
+    CONSTRAINT fk_refresh_token_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uk_refresh_token_token UNIQUE (token)
 );
