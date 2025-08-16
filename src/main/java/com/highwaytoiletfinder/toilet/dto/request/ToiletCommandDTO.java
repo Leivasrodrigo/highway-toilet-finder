@@ -30,4 +30,6 @@ public class ToiletCommandDTO {
     private Status status;
 
     private UUID placeId;
+
+    private UUID userId;
 }

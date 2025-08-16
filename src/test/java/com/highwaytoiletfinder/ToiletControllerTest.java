@@ -2,13 +2,10 @@ package com.highwaytoiletfinder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.highwaytoiletfinder.common.enums.Status;
-import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.toilet.commandStrategy.ToiletCommandStrategies;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.enums.Gender;
-import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.controller.ToiletController;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -118,7 +112,7 @@ public class ToiletControllerTest {
     }
 
     @Test
-    void create_shouldReturnCreatedToilet() throws Exception {
+    void handleToiletCommand_shouldReturnCreatedToilet() throws Exception {
         UUID toiletId = UUID.randomUUID();
         UUID placeId = UUID.randomUUID();
 
