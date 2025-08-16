@@ -6,6 +6,8 @@ import com.highwaytoiletfinder.googleplaces.model.NearbySearchResponse;
 import com.highwaytoiletfinder.googleplaces.service.GooglePlacesService;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
+import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+import com.highwaytoiletfinder.toilet.model.Toilet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class PlaceImportService {
     private final GooglePlacesService googlePlacesService;
     private final PlaceRepository placeRepository;
+    private final ToiletRepository toiletRepository;
 
     public List<Place> importNearbyPlaces(NearbySearchRequest request) {
         NearbySearchResponse response = googlePlacesService.searchNearby(request);
@@ -33,6 +36,23 @@ public class PlaceImportService {
                     return place;
                 })
                 .toList();
+
+        List<Place> savedPlaces = placeRepository.saveAll(newPlaces);
+
+        savedPlaces.forEach(place -> {
+            Toilet toilet = Toilet.builder()
+                    .place(place)
+                    .status(Status.PENDING)
+                    .gender(null)
+                    .price(null)
+                    .hasShower(null)
+                    .hasAccessible(null)
+                    .hasBabyChanger(null)
+                    .avgRating(null)
+                    .totalReviews(null)
+                    .build();
+            toiletRepository.save(toilet);
+        });
 
         return placeRepository.saveAll(newPlaces);
     }
