@@ -37,7 +37,7 @@ public class ToiletController {
     }
 
     @PostMapping
-    public ResponseEntity<ToiletResponseDTO> create(@RequestBody @Valid ToiletCommandDTO commandDTO) {
+    public ResponseEntity<ToiletResponseDTO> handleToiletCommand(@RequestBody @Valid ToiletCommandDTO commandDTO) {
         ToiletResponseDTO result = toiletCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
         if ("create".equalsIgnoreCase(commandDTO.getCommand())) {

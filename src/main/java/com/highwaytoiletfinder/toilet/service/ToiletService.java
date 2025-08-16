@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.toilet.service;
 
+import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
@@ -80,5 +81,32 @@ public class ToiletService {
     public Toilet findById(UUID id) {
         return toiletRepository.findById(id)
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+    }
+
+    public void updateToiletStatusBasedOnReviews(UUID toiletId) {
+        Toilet toilet = toiletRepository.findById(toiletId)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found"));
+
+        int totalReviews = toilet.getTotalReviews() != null ? toilet.getTotalReviews() : 0;
+
+        if (totalReviews >= 5) {
+            toilet.setStatus(Status.APPROVED);
+        } else {
+            toilet.setStatus(Status.PENDING);
+        }
+
+        toiletRepository.save(toilet);
+    }
+
+    public void updateToiletStatusBasedOnReviews(Toilet toilet) {
+        int totalReviews = toilet.getTotalReviews() != null ? toilet.getTotalReviews() : 0;
+
+        if (totalReviews >= 5) {
+            toilet.setStatus(Status.APPROVED);
+        } else {
+            toilet.setStatus(Status.PENDING);
+        }
+
+        toiletRepository.save(toilet);
     }
 }
