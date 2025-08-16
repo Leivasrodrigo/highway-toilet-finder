@@ -5,9 +5,7 @@ import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.place.service.PlaceService;
-import com.highwaytoiletfinder.toilet.commandStrategy.ToiletCommandStrategies;
 import com.highwaytoiletfinder.toilet.dto.request.ToiletCommandDTO;
-import com.highwaytoiletfinder.toilet.dto.request.ToiletRequestDTO;
 import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.enums.Gender;
 import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
@@ -16,11 +14,9 @@ import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,7 +106,7 @@ public class ToiletServiceTest {
         UUID toiletId2 = UUID.randomUUID();
         Toilet toilet2 = new Toilet();
         toilet2.setId(toiletId2);
-        toilet2.setGender(Gender.MALE);
+        toilet2.setGender(Gender.BYGENDER);
         toilet2.setHasAccessible(false);
         toilet2.setHasShower(true);
         toilet2.setHasBabyChanger(true);
@@ -130,7 +126,7 @@ public class ToiletServiceTest {
 
         ToiletResponseDTO responseDTO2 = new ToiletResponseDTO();
         responseDTO2.setId(toiletId2);
-        responseDTO2.setGender(Gender.MALE);
+        responseDTO2.setGender(Gender.BYGENDER);
         responseDTO2.setHasAccessible(false);
         responseDTO2.setHasShower(true);
         responseDTO2.setHasBabyChanger(true);
@@ -148,7 +144,7 @@ public class ToiletServiceTest {
         assertEquals(toiletId2, result.get(1).getId());
 
         assertEquals(Gender.UNISEX, result.get(0).getGender());
-        assertEquals(Gender.MALE, result.get(1).getGender());
+        assertEquals(Gender.BYGENDER, result.get(1).getGender());
 
         verify(toiletRepository).findAll();
         verify(toiletMapper).toResponseDTO(toilet1);
@@ -286,7 +282,7 @@ public class ToiletServiceTest {
         ToiletCommandDTO dto = new ToiletCommandDTO();
         dto.setId(toiletId);
         dto.setPlaceId(placeId);
-        dto.setGender(Gender.FEMALE);
+        dto.setGender(Gender.BYGENDER);
         dto.setHasAccessible(false);
         dto.setHasBabyChanger(true);
         dto.setHasShower(false);
@@ -296,7 +292,7 @@ public class ToiletServiceTest {
 
         Toilet updated = new Toilet();
         updated.setId(toiletId);
-        updated.setGender(Gender.FEMALE);
+        updated.setGender(Gender.BYGENDER);
         updated.setHasAccessible(false);
         updated.setHasBabyChanger(true);
         updated.setHasShower(false);
@@ -323,7 +319,7 @@ public class ToiletServiceTest {
         ToiletResponseDTO responseDTO = new ToiletResponseDTO();
         responseDTO.setId(toiletId);
         responseDTO.setPlace(placeDTO);
-        responseDTO.setGender(Gender.FEMALE);
+        responseDTO.setGender(Gender.BYGENDER);
         responseDTO.setHasAccessible(false);
         responseDTO.setHasBabyChanger(true);
         responseDTO.setHasShower(false);
@@ -346,7 +342,7 @@ public class ToiletServiceTest {
         ToiletResponseDTO result = toiletService.updateToilet(dto);
 
         assertEquals(toiletId, result.getId());
-        assertEquals(Gender.FEMALE, result.getGender());
+        assertEquals(Gender.BYGENDER, result.getGender());
         assertEquals("Posto Updated", result.getPlace().getName());
 
         verify(toiletRepository).findById(toiletId);

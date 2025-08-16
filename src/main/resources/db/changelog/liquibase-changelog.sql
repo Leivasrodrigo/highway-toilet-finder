@@ -24,13 +24,14 @@ CREATE TABLE users (
 CREATE TABLE toilets (
     id BINARY(16) PRIMARY KEY,
     status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
-    gender VARCHAR(10) NOT NULL,
-    has_shower BOOLEAN,
-    has_accessible BOOLEAN,
-    has_baby_changer BOOLEAN,
+    gender VARCHAR(10) NULL,
+    price VARCHAR(10) NULL,
+    has_shower BOOLEAN NULL,
+    has_accessible BOOLEAN NULL,
+    has_baby_changer BOOLEAN NULL,
     avg_rating DOUBLE,
     total_reviews INT,
-    place_id BINARY(16),
+    place_id BINARY(16) NOT NULL UNIQUE,
     CONSTRAINT fk_toilet_place FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
 );
 

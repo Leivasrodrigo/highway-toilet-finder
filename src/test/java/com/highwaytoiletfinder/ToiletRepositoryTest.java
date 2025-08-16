@@ -45,7 +45,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet1 = new Toilet();
         toilet1.setPlace(place1);
-        toilet1.setGender(Gender.MALE);
+        toilet1.setGender(Gender.BYGENDER);
 
         toiletRepository.save(toilet1);
 
@@ -59,7 +59,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet2 = new Toilet();
         toilet2.setPlace(place2);
-        toilet2.setGender(Gender.MALE);
+        toilet2.setGender(Gender.BYGENDER);
 
         toiletRepository.save(toilet2);
 
@@ -86,7 +86,7 @@ public class ToiletRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
-        toilet.setGender(Gender.MALE);
+        toilet.setGender(Gender.BYGENDER);
 
         toiletRepository.save(toilet);
 

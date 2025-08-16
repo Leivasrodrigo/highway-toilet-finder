@@ -18,4 +18,6 @@ public interface ToiletRepository extends JpaRepository<Toilet, UUID> {
     @Override
     @EntityGraph(attributePaths = {"reviews"})
     Optional<Toilet> findById(UUID id);
+
+    boolean existsByPlaceId(UUID placeId);
 }
