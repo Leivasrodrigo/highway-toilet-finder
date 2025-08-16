@@ -1,6 +1,6 @@
 package com.highwaytoiletfinder.toilet.enums;
 
-public enum Gender {
-    BYGENDER,
-    UNISEX
+public enum Price {
+    FREE,
+    PAID
 }

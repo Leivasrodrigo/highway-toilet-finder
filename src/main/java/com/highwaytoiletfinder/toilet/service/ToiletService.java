@@ -43,6 +43,10 @@ public class ToiletService {
 
         Place place = placeService.findById(dto.getPlaceId());
 
+        if (toiletRepository.existsByPlaceId(place.getId())) {
+            throw new IllegalStateException("This place already has a toilet assigned.");
+        }
+
         Toilet toilet = toiletMapper.toEntityFromCommandDTO(dto, place);
         Toilet saved = toiletRepository.save(toilet);
 

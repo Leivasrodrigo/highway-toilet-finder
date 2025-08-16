@@ -53,7 +53,7 @@ public class ReviewRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
-        toilet.setGender(Gender.MALE);
+        toilet.setGender(Gender.BYGENDER);
 
         toiletRepository.save(toilet);
 
@@ -104,7 +104,7 @@ public class ReviewRepositoryTest {
 
         Toilet toilet = new Toilet();
         toilet.setPlace(place);
-        toilet.setGender(Gender.MALE);
+        toilet.setGender(Gender.BYGENDER);
 
         toiletRepository.save(toilet);
 
