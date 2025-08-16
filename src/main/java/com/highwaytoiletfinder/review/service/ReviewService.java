@@ -101,5 +101,7 @@ public class ReviewService {
         toilet.setTotalReviews(reviews.size());
 
         toiletRepository.save(toilet);
+
+        toiletService.updateToiletStatusBasedOnReviews(toilet);
     }
 }
