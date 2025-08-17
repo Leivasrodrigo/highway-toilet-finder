@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.review.service;
 
+import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.ReviewNotFoundException;
 import com.highwaytoiletfinder.review.dto.request.ReviewCommandDTO;
@@ -53,6 +54,10 @@ public class ReviewService {
         User user = userService.findById(dto.getUserId());
         Toilet toilet = toiletService.findById(dto.getToiletId());
 
+        if (toilet.getStatus() == Status.REJECTED) {
+            throw new IllegalStateException("Cannot submit a review for a rejected toilet.");
+        }
+
         boolean alreadyExists = reviewRepository.existsByUserIdAndToiletId(user.getId(), toilet.getId());
         if (alreadyExists) {
             throw new IllegalStateException("User has already submitted a review for this toilet.");
@@ -73,6 +78,11 @@ public class ReviewService {
 
         Review existing = reviewRepository.findById(dto.getId())
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + dto.getId()));
+
+        Toilet toilet  = toiletRepository.getReferenceById(dto.getId());
+        if (toilet.getStatus() == Status.REJECTED) {
+            throw new IllegalStateException("Cannot update a review for a rejected toilet.");
+        }
 
         reviewMapper.updateEntityFromCommandDTO(dto, existing);
 
