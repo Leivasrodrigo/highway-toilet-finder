@@ -47,6 +47,7 @@ public class ToiletMapper {
         if (dto.getHasShower() != null) toilet.setHasShower(dto.getHasShower());
         if (dto.getHasAccessible() != null) toilet.setHasAccessible(dto.getHasAccessible());
         if (dto.getHasBabyChanger() != null) toilet.setHasBabyChanger(dto.getHasBabyChanger());
+        if (dto.getPrice() != null) toilet.setPrice(dto.getPrice());
         if (dto.getStatus() != null) toilet.setStatus(dto.getStatus());
     }
 

@@ -1,19 +1,23 @@
 meta {
   name: PlaceImportGasStation
   type: http
-  seq: 24
+  seq: 8
 }
 
 post {
-  url: http://localhost:8080/api/googleplaces/nearbysearch
+  url: http://localhost:8080/api/import/places
   body: json
   auth: none
+}
+
+headers {
+  Authorization: Bearer {{jwtToken1}}
 }
 
 body:json {
   {
     "location": "-30.0605,-51.2417",
-    "radius": 1000,
+    "radius": 5000,
     "keyword": "posto",
     "type": "gas_station"
   }

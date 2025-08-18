@@ -4,6 +4,7 @@ import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.toilet.enums.Gender;
+import com.highwaytoiletfinder.toilet.enums.Price;
 import lombok.*;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class ToiletResponseDTO {
     private Integer totalReviews;
 
     private Status status;
+
+    private Price price;
 
     private PlaceResponseDTO place;
 

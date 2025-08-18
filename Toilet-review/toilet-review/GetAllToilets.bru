@@ -1,7 +1,7 @@
 meta {
   name: GetAllToilets
   type: http
-  seq: 25
+  seq: 9
 }
 
 get {
@@ -11,5 +11,10 @@ get {
 }
 
 headers {
-  Authorization: Bearer {{jwtToken}}
+  Authorization: Bearer {{jwtToken1}}
+}
+
+script:post-response {
+  bru.setEnvVar("toiletId1", res.getBody()[0].id);
+  
 }

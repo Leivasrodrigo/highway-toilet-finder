@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.user.dto.response;
 
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import lombok.*;
 
@@ -15,6 +16,7 @@ public class UserResponseDTO {
     private UUID id;
     private String name;
     private String email;
+    private Role userRole;
     private List<ReviewResponseDTO> reviews;
 
 }
