@@ -1,6 +1,7 @@
 package com.highwaytoiletfinder.user.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.review.model.Review;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,4 +31,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference(value = "user-review")
     private List<Review> reviews;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
+    private Role userRole = Role.USER;
 }

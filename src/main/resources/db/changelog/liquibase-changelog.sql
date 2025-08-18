@@ -17,7 +17,8 @@ CREATE TABLE users (
     id BINARY(16) PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255)
+    password_hash VARCHAR(255),
+    user_role VARCHAR(50) NOT NULL DEFAULT 'USER'
 );
 
 -- changeset rodrigo:create-toilet-table
