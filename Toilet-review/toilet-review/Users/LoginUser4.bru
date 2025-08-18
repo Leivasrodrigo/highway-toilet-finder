@@ -1,0 +1,30 @@
+meta {
+  name: LoginUser4
+  type: http
+  seq: 13
+}
+
+post {
+  url: //localhost:8080/auth/user
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{jwtToken1}}
+}
+
+body:json {
+  {
+    "command": "login",
+    "email": "marcos.augusto@example.com",
+    "password": "senhaSegura123"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("userId4", res.getBody().id);
+  bru.setEnvVar("jwtToken4", res.getBody().token);
+  bru.setEnvVar("refreshToken4", res.getBody().refreshToken);
+  
+}

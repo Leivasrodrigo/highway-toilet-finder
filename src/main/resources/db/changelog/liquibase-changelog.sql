@@ -39,7 +39,6 @@ CREATE TABLE toilets (
 -- changeset rodrigo:create-review-table
 CREATE TABLE reviews (
     id BINARY(16) PRIMARY KEY,
-    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     toilet_id BINARY(16) NOT NULL,
     user_id BINARY(16) NOT NULL,
     rating_general INT,

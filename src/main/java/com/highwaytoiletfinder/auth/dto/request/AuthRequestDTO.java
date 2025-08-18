@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.auth.dto.request;
 
+import com.highwaytoiletfinder.common.security.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -23,4 +24,6 @@ public class AuthRequestDTO {
     private String name;
 
     private String refreshToken;
+
+    private Role userRole;
 }

@@ -1,7 +1,7 @@
 meta {
-  name: CreateReview4
+  name: CreateReview1
   type: http
-  seq: 23
+  seq: 1
 }
 
 post {
@@ -11,11 +11,12 @@ post {
 }
 
 headers {
-  Authorization: Bearer {{jwtToken}}
+  Authorization: Bearer {{jwtToken1}}
 }
 
 body:json {
   {
+    "command": "create",
     "toiletId": "{{toiletId1}}",
     "userId": "{{userId1}}",
     "ratingGeneral": 4,
@@ -23,4 +24,8 @@ body:json {
     "ratingMaintenance": 5,
     "comment": "Limpeza razoável, mas bem conservado."
   }
+}
+
+script:post-response {
+  bru.setEnvVar("reviewId1", res.getBody().id);
 }

@@ -1,0 +1,31 @@
+meta {
+  name: CreateReview3
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/reviews
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{jwtToken3}}
+}
+
+body:json {
+  {
+    "command": "create",
+    "toiletId": "{{toiletId1}}",
+    "userId": "{{userId3}}",
+    "ratingGeneral": 4,
+    "ratingCleanliness": 3,
+    "ratingMaintenance": 3,
+    "comment": "Deu para usar."
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("reviewId3", res.getBody().id);
+}

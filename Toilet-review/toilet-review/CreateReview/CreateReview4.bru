@@ -1,0 +1,31 @@
+meta {
+  name: CreateReview4
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/reviews
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{jwtToken4}}
+}
+
+body:json {
+  {
+    "command": "create",
+    "toiletId": "{{toiletId1}}",
+    "userId": "{{userId4}}",
+    "ratingGeneral": 3,
+    "ratingCleanliness": 2,
+    "ratingMaintenance": 5,
+    "comment": "Tava bem sujo!"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("reviewId4", res.getBody().id);
+}

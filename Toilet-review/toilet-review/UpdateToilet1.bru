@@ -1,7 +1,7 @@
 meta {
   name: UpdateToilet1
   type: http
-  seq: 15
+  seq: 5
 }
 
 post {
@@ -11,17 +11,18 @@ post {
 }
 
 headers {
-  Authorization: Bearer {{jwtToken}}
+  Authorization: Bearer {{jwtToken1}}
 }
 
 body:json {
   {
     "command": "update",
-    "Id": "{{toiletId1}}",
-    "gender": "FEMALE",
+    "id": "0191c050-6d12-4a08-bd56-089fe52e0fb4",
+    "gender": "UNISEX",
     "hasAccessible": true,
     "hasBabyChanger": false,
-    "hasShower": true
+    "hasShower": true,
+    "price": "free"
   }
 }
 

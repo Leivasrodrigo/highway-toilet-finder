@@ -2,6 +2,7 @@ package com.highwaytoiletfinder.toilet.dto.request;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.toilet.enums.Gender;
+import com.highwaytoiletfinder.toilet.enums.Price;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -26,6 +27,8 @@ public class ToiletCommandDTO {
     private Boolean hasBabyChanger;
 
     private Boolean hasShower;
+
+    private Price price;
 
     private Status status;
 

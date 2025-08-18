@@ -1,8 +1,5 @@
 package com.highwaytoiletfinder.review.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.user.model.User;
 import jakarta.persistence.*;
@@ -23,11 +20,6 @@ public class Review {
     @Id
     @GeneratedValue
     private UUID id;
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private Status status = Status.PENDING;;
 
     @Column(name = "rating_general", nullable = false)
     private Integer ratingGeneral;

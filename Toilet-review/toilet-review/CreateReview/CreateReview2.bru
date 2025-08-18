@@ -1,7 +1,7 @@
 meta {
-  name: CreateReview1
+  name: CreateReview2
   type: http
-  seq: 18
+  seq: 2
 }
 
 post {
@@ -11,18 +11,18 @@ post {
 }
 
 headers {
-  Authorization: Bearer {{jwtToken}}
+  Authorization: Bearer {{jwtToken2}}
 }
 
 body:json {
   {
     "command": "create",
     "toiletId": "{{toiletId1}}",
-    "userId": "{{userId1}}",
-    "ratingGeneral": 4,
-    "ratingCleanliness": 3,
-    "ratingMaintenance": 5,
-    "comment": "Limpeza razoável, mas bem conservado."
+    "userId": "{{userId2}}",
+    "ratingGeneral": 3,
+    "ratingCleanliness": 2,
+    "ratingMaintenance": 3,
+    "comment": "Bem sujo, mas conservado."
   }
 }
 

@@ -3,6 +3,7 @@ package com.highwaytoiletfinder.auth.service;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
 import com.highwaytoiletfinder.common.exceptions.EmailAlreadyInUseException;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class AuthService {
                 .email(dto.getEmail())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
+                .userRole(dto.getUserRole() != null ? dto.getUserRole() : Role.USER)
                 .build();
 
         userRepository.save(newUser);

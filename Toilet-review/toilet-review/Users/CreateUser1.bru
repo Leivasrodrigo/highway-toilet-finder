@@ -1,11 +1,11 @@
 meta {
   name: CreateUser1
   type: http
-  seq: 6
+  seq: 1
 }
 
 post {
-  url: //localhost:8080/auth/user
+  url: http://localhost:8080/auth/user
   body: json
   auth: none
 }
@@ -15,11 +15,13 @@ body:json {
     "command": "register",
     "name": "Maria Souza",
     "email": "maria.souza@example.com",
-    "password": "senhaSegura123"
+    "password": "senhaSegura123",
+    "user_role": "USER"
   }
 }
 
 script:post-response {
   bru.setEnvVar("userId1", res.getBody().id);
+  
   
 }
