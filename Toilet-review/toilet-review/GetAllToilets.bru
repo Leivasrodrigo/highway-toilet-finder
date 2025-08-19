@@ -16,5 +16,6 @@ headers {
 
 script:post-response {
   bru.setEnvVar("toiletId1", res.getBody()[0].id);
+  bru.setEnvVar("toiletId2", res.getBody()[1].id);
   
 }

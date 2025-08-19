@@ -1,0 +1,23 @@
+meta {
+  name: ReportToilet4
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/toilets
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{jwtToken4}}
+}
+
+body:json {
+  {
+    "command": "report",
+    "id": "{{toiletId2}}",
+    "userId": "{{userId4}}"
+  }
+}

@@ -59,3 +59,14 @@ CREATE TABLE refresh_token (
     CONSTRAINT fk_refresh_token_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT uk_refresh_token_token UNIQUE (token)
 );
+
+-- changeset rodrigo:create-toilet-report-table
+CREATE TABLE toilet_reports (
+    id BINARY(16) PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    toilet_id BINARY(16) NOT NULL,
+    created_at TIMESTAMP,
+    CONSTRAINT fk_toilet_report_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_toilet_report_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id) ON DELETE CASCADE,
+    CONSTRAINT uk_toilet_report_user_toilet UNIQUE (user_id, toilet_id)
+);

@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 public class ToiletReport {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     @ManyToOne(optional = false)
