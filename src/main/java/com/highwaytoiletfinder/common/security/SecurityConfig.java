@@ -3,6 +3,7 @@ package com.highwaytoiletfinder.common.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,6 +27,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/places/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/places/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/googleplaces/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/import/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

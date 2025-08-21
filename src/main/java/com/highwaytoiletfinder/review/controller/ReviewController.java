@@ -36,7 +36,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ReviewResponseDTO> createOrUpdate(@RequestBody @Valid ReviewCommandDTO commandDTO) {
+    public ResponseEntity<ReviewResponseDTO> handleReviewCommand(@RequestBody @Valid ReviewCommandDTO commandDTO) {
         ReviewResponseDTO result = reviewCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
         if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
