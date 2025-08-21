@@ -2,6 +2,8 @@ package com.highwaytoiletfinder.toilet.service;
 
 import com.highwaytoiletfinder.common.enums.Status;
 import com.highwaytoiletfinder.common.exceptions.ToiletNotFoundException;
+import com.highwaytoiletfinder.common.security.AuthenticatedUserProvider;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.place.service.PlaceService;
@@ -10,8 +12,10 @@ import com.highwaytoiletfinder.toilet.dto.response.ToiletResponseDTO;
 import com.highwaytoiletfinder.toilet.mapper.ToiletMapper;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+import com.highwaytoiletfinder.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,7 @@ public class ToiletService {
     private final ToiletMapper toiletMapper;
     private final ToiletRepository toiletRepository;
     private final PlaceRepository placeRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
     public List<ToiletResponseDTO> getAll() {
         List<Toilet> toilets = toiletRepository.findAll();
@@ -40,6 +45,11 @@ public class ToiletService {
     public ToiletResponseDTO createToilet(ToiletCommandDTO dto) {
         if (dto.getId() != null) {
             throw new IllegalArgumentException("ID must not be provided for creation");
+        }
+
+        User user = authenticatedUserProvider.getAuthenticatedUser();
+        if (!Role.ADMIN.equals(user.getUserRole())) {
+            throw new AccessDeniedException("Only admins can create toilets.");
         }
 
         Place place = placeService.findById(dto.getPlaceId());
@@ -73,6 +83,11 @@ public class ToiletService {
     public ToiletResponseDTO deleteToilet(UUID id) {
         Toilet toilet = toiletRepository.findById(id)
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
+
+        User user = authenticatedUserProvider.getAuthenticatedUser();
+        if (!Role.ADMIN.equals(user.getUserRole())) {
+            throw new AccessDeniedException("Only admins can delete toilets.");
+        }
 
         toiletRepository.deleteById(id);
         return new ToiletResponseDTO();

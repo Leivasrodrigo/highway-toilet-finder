@@ -1,7 +1,7 @@
 meta {
-  name: CreateReview2
+  name: DeleteReview2
   type: http
-  seq: 3
+  seq: 5
 }
 
 post {
@@ -16,10 +16,11 @@ headers {
 
 body:json {
   {
-    "command": "create",
+    "command": "update",
+    "id": "{{reviewId2}}",
     "toiletId": "{{toiletId1}}",
     "ratingGeneral": 3,
-    "ratingCleanliness": 2,
+    "ratingCleanliness": 1,
     "ratingMaintenance": 3,
     "comment": "Bem sujo, mas conservado."
   }

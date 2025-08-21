@@ -1,6 +1,8 @@
 package com.highwaytoiletfinder.user.service;
 
 import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
+import com.highwaytoiletfinder.common.security.AuthenticatedUserProvider;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.dto.request.UserCommandDTO;
 import com.highwaytoiletfinder.user.dto.response.UserResponseDTO;
 import com.highwaytoiletfinder.user.mapper.UserMapper;
@@ -8,6 +10,7 @@ import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +24,16 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
     public List<UserResponseDTO> getAll() {
+        User authUser = authenticatedUserProvider.getAuthenticatedUser();
+        boolean isAdmin = Role.ADMIN.equals(authUser.getUserRole());
+
+        if (!isAdmin) {
+            throw new AccessDeniedException("Only admins can see all users");
+        }
+
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(userMapper::toResponseDTO)
@@ -30,6 +41,14 @@ public class UserService {
     }
 
     public UserResponseDTO getById(UUID id) {
+        User authUser = authenticatedUserProvider.getAuthenticatedUser();
+        boolean isAdmin = Role.ADMIN.equals(authUser.getUserRole());
+        boolean isOwner = authUser.getId().equals(id);
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You cannot view another user's profile");
+        }
+
         return userRepository.findById(id)
                 .map(userMapper::toResponseDTO)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
@@ -37,12 +56,19 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updateUser(UserCommandDTO dto) {
-        if (dto.getId() == null) {
-            throw new IllegalArgumentException("ID must be provided for update");
+        User authUser = authenticatedUserProvider.getAuthenticatedUser();
+
+        UUID targetUserId = dto.getId() != null ? dto.getId() : authUser.getId();
+
+        boolean isAdmin = Role.ADMIN.equals(authUser.getUserRole());
+        boolean isOwner = authUser.getId().equals(targetUserId);
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You cannot update another user's profile");
         }
 
-        User existing = userRepository.findById(dto.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getId()));
+        User existing = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + targetUserId));
 
         userMapper.updateEntityFromCommandDTO(dto, existing);
 
@@ -52,19 +78,28 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updatePassword(UserCommandDTO dto) {
-        if (dto.getId() == null) {
-            throw new IllegalArgumentException("ID must be provided for update");
+        User authUser = authenticatedUserProvider.getAuthenticatedUser();
+
+        UUID targetUserId = dto.getId() != null ? dto.getId() : authUser.getId();
+
+        boolean isOwner = authUser.getId().equals(targetUserId);
+        boolean isAdmin = Role.ADMIN.equals(authUser.getUserRole());
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You cannot update this user's password");
         }
 
-        User user = userRepository.findById(dto.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.getId()));
+        User user = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + targetUserId));
 
-        if (dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()) {
-            throw new IllegalArgumentException("Current password must be provided for verification");
-        }
+        if (!isAdmin) {
+            if (dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()) {
+                throw new IllegalArgumentException("Current password must be provided for verification");
+            }
 
-        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Current password is incorrect");
+            if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
+                throw new IllegalArgumentException("Current password is incorrect");
+            }
         }
 
         if (dto.getPassword() == null || dto.getPassword().isBlank()) {
@@ -82,6 +117,14 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
+        User authUser = authenticatedUserProvider.getAuthenticatedUser();
+        boolean isAdmin = Role.ADMIN.equals(authUser.getUserRole());
+        boolean isOwner = authUser.getId().equals(id);
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You cannot delete another user's profile");
+        }
+
         userRepository.deleteById(id);
         return new UserResponseDTO();
     }
@@ -89,5 +132,10 @@ public class UserService {
     public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 }

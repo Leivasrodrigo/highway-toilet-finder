@@ -1,8 +1,9 @@
 package com.highwaytoiletfinder.review.service;
 
 import com.highwaytoiletfinder.common.enums.Status;
-import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.common.exceptions.ReviewNotFoundException;
+import com.highwaytoiletfinder.common.security.AuthenticatedUserProvider;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.review.dto.request.ReviewCommandDTO;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import com.highwaytoiletfinder.review.model.Review;
@@ -12,9 +13,11 @@ import com.highwaytoiletfinder.toilet.model.Toilet;
 import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import com.highwaytoiletfinder.toilet.service.ToiletService;
 import com.highwaytoiletfinder.user.model.User;
-import com.highwaytoiletfinder.user.repository.UserRepository;
 import com.highwaytoiletfinder.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -27,10 +30,10 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ToiletRepository toiletRepository;
-    private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
     private final UserService userService;
     private final ToiletService toiletService;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
 
     public List<ReviewResponseDTO> getByToiletId(UUID toiletId) {
         return reviewRepository.findByToiletId(toiletId)
@@ -45,13 +48,14 @@ public class ReviewService {
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + id));
     }
 
-
     public ReviewResponseDTO createReview(ReviewCommandDTO dto) {
         if (dto.getId() != null) {
             throw new IllegalArgumentException("ID must not be provided for creation");
         }
 
-        User user = userService.findById(dto.getUserId());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userService.findByEmail(email);
         Toilet toilet = toiletService.findById(dto.getToiletId());
 
         if (toilet.getStatus() == Status.REJECTED) {
@@ -79,9 +83,17 @@ public class ReviewService {
         Review existing = reviewRepository.findById(dto.getId())
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + dto.getId()));
 
-        Toilet toilet  = toiletRepository.getReferenceById(dto.getId());
+        User user = authenticatedUserProvider.getAuthenticatedUser();
+
+        Toilet toilet = existing.getToilet();
         if (toilet.getStatus() == Status.REJECTED) {
             throw new IllegalStateException("Cannot update a review for a rejected toilet.");
+        }
+
+        boolean isOwner = existing.getUser().getId().equals(user.getId());
+
+        if (!isOwner) {
+            throw new AccessDeniedException("User cannot update this review");
         }
 
         reviewMapper.updateEntityFromCommandDTO(dto, existing);
@@ -94,10 +106,19 @@ public class ReviewService {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + id));
 
+        User user = authenticatedUserProvider.getAuthenticatedUser();
+
+        boolean isOwner = review.getUser().getId().equals(user.getId());
+        boolean isModeratorOrAdmin = user.getUserRole() == Role.ADMIN
+                || user.getUserRole() == Role.MODERATOR;
+
+        if (!isOwner && !isModeratorOrAdmin) {
+            throw new AccessDeniedException("User cannot delete this review");
+        }
+
         reviewRepository.deleteById(id);
         return new ReviewResponseDTO();
     }
-
 
     private void updateToiletAvgRating(Toilet toilet) {
         List<Review> reviews = reviewRepository.findByToiletId(toilet.getId());
