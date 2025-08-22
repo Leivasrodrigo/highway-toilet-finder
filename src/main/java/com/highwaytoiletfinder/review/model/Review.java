@@ -22,7 +22,7 @@ public class Review {
     private UUID id;
 
     @Column(name = "rating_general", nullable = false)
-    private Integer ratingGeneral;
+    private Double ratingGeneral;
 
     @Column(name = "rating_cleanliness", nullable = false)
     private Integer ratingCleanliness;

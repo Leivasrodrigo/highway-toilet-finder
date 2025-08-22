@@ -25,11 +25,8 @@ public class ReviewMapper {
                 .build();
     }
 
-
     public void updateEntityFromCommandDTO(ReviewCommandDTO dto, Review review) {
-        if (dto.getRatingGeneral() != null) {
-            review.setRatingGeneral(dto.getRatingGeneral());
-        }
+
         if (dto.getRatingCleanliness() != null) {
             review.setRatingCleanliness(dto.getRatingCleanliness());
         }
@@ -40,17 +37,23 @@ public class ReviewMapper {
             String trimmed = dto.getComment().trim();
             review.setComment(trimmed.isEmpty() ? null : trimmed);
         }
+
+        review.setRatingGeneral(calculateRatingGeneral(dto.getRatingCleanliness(), dto.getRatingMaintenance()));
     }
 
     public Review toEntityFromCommandDTO(ReviewCommandDTO dto, User user, Toilet toilet) {
         return Review.builder()
                 .id(dto.getId())
-                .ratingGeneral(dto.getRatingGeneral())
+                .ratingGeneral(calculateRatingGeneral(dto.getRatingCleanliness(), dto.getRatingMaintenance()))
                 .ratingCleanliness(dto.getRatingCleanliness())
                 .ratingMaintenance(dto.getRatingMaintenance())
                 .comment(dto.getComment() != null && !dto.getComment().trim().isEmpty() ? dto.getComment().trim() : null)
                 .user(user)
                 .toilet(toilet)
                 .build();
+    }
+
+    private Double calculateRatingGeneral(Integer ratingCleanliness, Integer ratingMaintenance) {
+        return ((ratingCleanliness + ratingMaintenance) / 2.0);
     }
 }

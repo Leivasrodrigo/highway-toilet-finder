@@ -99,6 +99,7 @@ public class ReviewService {
         reviewMapper.updateEntityFromCommandDTO(dto, existing);
 
         Review updated = reviewRepository.save(existing);
+        updateToiletAvgRating(toilet);
         return reviewMapper.toResponseDTO(updated);
     }
     
@@ -117,6 +118,7 @@ public class ReviewService {
         }
 
         reviewRepository.deleteById(id);
+        updateToiletAvgRating(review.getToilet());
         return new ReviewResponseDTO();
     }
 
@@ -124,7 +126,7 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findByToiletId(toilet.getId());
 
         double avg = reviews.stream()
-                .mapToInt(Review::getRatingGeneral)
+                .mapToDouble(Review::getRatingGeneral)
                 .average()
                 .orElse(0);
 
