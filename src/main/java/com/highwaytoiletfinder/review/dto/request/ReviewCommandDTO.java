@@ -23,8 +23,6 @@ public class ReviewCommandDTO {
 
     private UUID userId;
 
-    @Min(1)
-    @Max(5)
     private Integer ratingGeneral;
 
     @Min(1)

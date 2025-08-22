@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 public class ReviewResponseDTO {
     private UUID id;
-    private int ratingGeneral;
+    private Double ratingGeneral;
     private int ratingCleanliness;
     private int ratingMaintenance;
     private String comment;
