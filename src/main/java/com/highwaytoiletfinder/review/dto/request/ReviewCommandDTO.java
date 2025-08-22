@@ -16,14 +16,12 @@ public class ReviewCommandDTO {
 
     private UUID id;
 
-    @NotBlank(message = "command is required and must be 'create', 'update' or 'update'")
+    @NotBlank(message = "command is required and must be 'create', 'update' or 'delete'")
     private String command;
 
     private UUID toiletId;
 
     private UUID userId;
-
-    private Integer ratingGeneral;
 
     @Min(1)
     @Max(5)
