@@ -2,8 +2,10 @@ package com.highwaytoiletfinder.auth.commandStrategy;
 
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
+import com.highwaytoiletfinder.common.security.AdminInitializer;
 import com.highwaytoiletfinder.common.security.JwtUtil;
 import com.highwaytoiletfinder.common.security.RefreshTokenService;
+import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,7 @@ public class LoginStrategy implements AuthCommandStrategy {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
+    private final AdminInitializer adminInitializer;
 
     @Override
     public boolean supports(String command) {
@@ -37,6 +40,13 @@ public class LoginStrategy implements AuthCommandStrategy {
 
             var user = userRepository.findByEmail(dto.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found after authentication"));
+
+            Role currentRole = user.getUserRole();
+
+            adminInitializer.syncAdminRole(user);
+            if (currentRole != user.getUserRole()) {
+                userRepository.save(user);
+            }
 
             var refreshToken = refreshTokenService.createRefreshToken(user);
 

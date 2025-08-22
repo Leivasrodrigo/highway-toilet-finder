@@ -24,6 +24,4 @@ public class AuthRequestDTO {
     private String name;
 
     private String refreshToken;
-
-    private Role userRole;
 }

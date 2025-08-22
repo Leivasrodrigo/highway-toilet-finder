@@ -3,6 +3,7 @@ package com.highwaytoiletfinder.auth.service;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
 import com.highwaytoiletfinder.common.exceptions.EmailAlreadyInUseException;
+import com.highwaytoiletfinder.common.security.AdminInitializer;
 import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminInitializer adminInitializer;
 
     public AuthResponseDTO register(AuthRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -25,8 +27,10 @@ public class AuthService {
                 .email(dto.getEmail())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
-                .userRole(dto.getUserRole() != null ? dto.getUserRole() : Role.USER)
+                .userRole(Role.USER)
                 .build();
+
+        adminInitializer.syncAdminRole(newUser);
 
         userRepository.save(newUser);
 
