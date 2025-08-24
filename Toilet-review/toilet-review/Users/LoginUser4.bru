@@ -1,17 +1,13 @@
 meta {
   name: LoginUser4
   type: http
-  seq: 13
+  seq: 16
 }
 
 post {
   url: //localhost:8080/auth/user
   body: json
   auth: none
-}
-
-headers {
-  Authorization: Bearer {{jwtToken1}}
 }
 
 body:json {

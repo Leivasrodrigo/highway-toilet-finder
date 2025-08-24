@@ -1,7 +1,7 @@
 meta {
-  name: LoginUser2
+  name: RefreshUser2
   type: http
-  seq: 9
+  seq: 10
 }
 
 post {
@@ -12,17 +12,12 @@ post {
 
 body:json {
   {
-    "command": "login",
-    "email": "pereira.getulio@example.com",
-    "password": "senhaSegura123"
+    "command": "refresh",
+    "refreshToken": "{{refreshToken2}}"
   }
 }
 
 script:post-response {
-  bru.setEnvVar("userId2", res.getBody().id);
   bru.setEnvVar("jwtToken2", res.getBody().token);
   bru.setEnvVar("refreshToken2", res.getBody().refreshToken);
-  
-  
-  
 }
