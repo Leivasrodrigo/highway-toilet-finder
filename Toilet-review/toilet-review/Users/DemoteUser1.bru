@@ -1,20 +1,23 @@
 meta {
-  name: LoginUser5
+  name: DemoteUser1
   type: http
-  seq: 18
+  seq: 12
 }
 
 post {
-  url: //localhost:8080/auth/user
+  url: //localhost:8080/api/users
   body: json
   auth: none
 }
 
+headers {
+  Authorization: Bearer {{jwtToken2}}
+}
+
 body:json {
   {
-    "command": "login",
-    "email": "gabi.criz@example.com",
-    "password": "senhaSegura123"
+    "command": "demote",
+    "email": "maria.souza@example.com"
   }
 }
 
