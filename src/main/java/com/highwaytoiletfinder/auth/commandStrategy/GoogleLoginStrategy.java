@@ -43,13 +43,13 @@ public class GoogleLoginStrategy implements AuthCommandStrategy {
     public AuthResponseDTO execute(AuthRequestDTO dto) {
         try {
             String idTokenString = dto.getIdToken();
-            System.out.println(idTokenString);
+
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(),
                     new GsonFactory()
             ).setAudience(Collections.singletonList(clientId))
                     .build();
-            System.out.println("Client ID configurado: " + clientId);
+
             GoogleIdToken idToken = verifier.verify(idTokenString);
             if (idToken == null) {
                 throw new RuntimeException("Invalid Google ID token.");

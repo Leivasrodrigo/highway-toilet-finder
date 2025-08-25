@@ -13,13 +13,13 @@ post {
 body:json {
   {
     "command": "googleLogin",
-    "email": "digow130@gmail.com"
+    "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE0OTljMTU0Y2NjOGEyNWUyNGQ4ZGU4YjFhOWY4NDVhZWZiNmYzY2EiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDM3ODI3NjI3MjctbzQxbGg2MjJyY2JiMTdzdmVwbXRuNGY2bTA5MGFzbWIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDM3ODI3NjI3MjctbzQxbGg2MjJyY2JiMTdzdmVwbXRuNGY2bTA5MGFzbWIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQ3NDgzMzU3MTU1NzI0MTAxNDkiLCJlbWFpbCI6ImRpZ293MTMwQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoia1YwZk9RTExNQy02OGZkd1B1a2ZiZyIsIm5hbWUiOiJSb2RyaWdvIE51bmVzIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lXU0QyMnBvc0pLam1xcHgtTDA5NHB6aVdWcXZzU3VFdVVRdks5R0dxbGVGOXhqTDR0VkE9czk2LWMiLCJnaXZlbl9uYW1lIjoiUm9kcmlnbyIsImZhbWlseV9uYW1lIjoiTnVuZXMiLCJpYXQiOjE3NTYxNDU3ODcsImV4cCI6MTc1NjE0OTM4N30.kAMlNb29VkTEkZuurc8kQvVNRNF3Kekw7FBtbfn7DsoiVflwxPwd6ydAfPrxnlAe3iXsDuY8iZXfiEFxBmuz3D1u-xLUW-8RcrWhi3Q4e4eMtOBivF3j6qhQSvTyOSGAe1TZhPh7nIhs9TqFgH3QbDQfzzu2PK2lLGJrPo83zxKvv1IMqD_KIdxpflo32EP6WRJgPtQYmLXlZ6AzOJXM8KOsjx5xTnMdhbipTIzy-wsHYZQlpuXcN5FOKGgpBB4QwvF04DBGYXxRwMsqsYwzOkR7pd77M-LpUI7y3air9XPBYTFMtQMypweaN-AAB8paA-AV0SnzJUz8UxLu4EZPYQ"
   }
 }
 
 script:post-response {
-  bru.setEnvVar("userId5", res.getBody().id);
-  bru.setEnvVar("jwtToken5", res.getBody().token);
-  bru.setEnvVar("refreshToken5", res.getBody().refreshToken);
+  bru.setEnvVar("userId6", res.getBody().id);
+  bru.setEnvVar("jwtToken6", res.getBody().token);
+  bru.setEnvVar("refreshToken6", res.getBody().refreshToken);
   
 }

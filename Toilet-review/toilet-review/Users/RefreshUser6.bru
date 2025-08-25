@@ -1,0 +1,23 @@
+meta {
+  name: RefreshUser6
+  type: http
+  seq: 19
+}
+
+post {
+  url: //localhost:8080/auth/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "command": "refresh",
+    "refreshToken": "{{refreshToken6}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("jwtToken6", res.getBody().token);
+  bru.setEnvVar("refreshToken6", res.getBody().refreshToken);
+}
