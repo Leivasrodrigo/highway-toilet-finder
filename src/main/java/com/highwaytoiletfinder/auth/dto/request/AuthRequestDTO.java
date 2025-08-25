@@ -11,17 +11,16 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AuthRequestDTO {
-    @NotBlank(message = "Command is required and must be 'login'")
+    @NotBlank(message = "Command is required")
     private String command;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank(message = "Password is required")
     private String password;
 
     private String name;
 
     private String refreshToken;
+
+    private String idToken;
 }

@@ -36,6 +36,7 @@ public class AdminInitializer {
         });
     }
 
+    @Transactional
     public void syncAdminRole(User user) {
         Role previousRole = user.getUserRole();
 
