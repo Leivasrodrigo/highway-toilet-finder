@@ -31,15 +31,19 @@ public class LoginStrategy implements AuthCommandStrategy {
 
     @Override
     public AuthResponseDTO execute(AuthRequestDTO dto) {
+        var user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isGoogleUser()) {
+            throw new RuntimeException("This user must login via Google");
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
             );
 
             String jwtToken = jwtUtil.generateToken(dto.getEmail());
-
-            var user = userRepository.findByEmail(dto.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
             Role currentRole = user.getUserRole();
 

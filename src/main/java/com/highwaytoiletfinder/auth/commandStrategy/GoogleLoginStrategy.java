@@ -62,9 +62,9 @@ public class GoogleLoginStrategy implements AuthCommandStrategy {
             User user = userRepository.findByEmail(email)
                     .orElseGet(() -> {
                         AuthRequestDTO registerDto = new AuthRequestDTO();
+                        registerDto.setCommand(dto.getCommand());
                         registerDto.setEmail(email);
-                        registerDto.setName(name);
-                        registerDto.setPassword("GOOGLE_TEMP_PASSWORD");
+                        registerDto.setName(name != null ? name : "Usuário Google");
                         authService.register(registerDto);
                         return userRepository.findByEmail(email)
                                 .orElseThrow(() -> new RuntimeException("Failed to register Google user"));

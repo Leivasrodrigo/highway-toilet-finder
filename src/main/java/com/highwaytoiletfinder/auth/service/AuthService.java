@@ -23,12 +23,21 @@ public class AuthService {
             throw new EmailAlreadyInUseException("Email already in use: " + dto.getEmail());
         }
 
-        User newUser = User.builder()
+        boolean isGoogle = "googleLogin".equalsIgnoreCase(dto.getCommand());
+
+        User.UserBuilder userBuilder = User.builder()
                 .email(dto.getEmail())
-                .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
                 .userRole(Role.USER)
-                .build();
+                .googleUser(isGoogle);
+
+        if (!isGoogle) {
+            userBuilder.passwordHash(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            userBuilder.passwordHash(null);
+        }
+
+        User newUser = userBuilder.build();
 
         adminInitializer.syncAdminRole(newUser);
 

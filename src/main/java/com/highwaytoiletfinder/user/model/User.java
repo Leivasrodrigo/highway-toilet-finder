@@ -36,4 +36,7 @@ public class User {
     @Column(name = "user_role", nullable = false)
     @Builder.Default
     private Role userRole = Role.USER;
+
+    @Column(name = "google_user")
+    private boolean googleUser;
 }
