@@ -9,9 +9,11 @@ import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import com.highwaytoiletfinder.toilet.model.Toilet;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor

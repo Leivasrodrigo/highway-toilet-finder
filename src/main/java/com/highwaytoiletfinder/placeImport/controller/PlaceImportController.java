@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/api/import")
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class PlaceImportController {
 
     @PostMapping("/places")
     public ResponseEntity<Void> importPlaces(@RequestBody NearbySearchRequest request) {
-        placeImportService.importNearbyPlaces(request);
-        return ResponseEntity.ok().build();
+        placeImportService.importNearbyPlaces(request); return ResponseEntity.ok().build();
     }
 }
