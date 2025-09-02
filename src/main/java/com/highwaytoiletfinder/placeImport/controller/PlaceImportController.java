@@ -18,6 +18,7 @@ public class PlaceImportController {
 
     @PostMapping("/places")
     public ResponseEntity<Void> importPlaces(@RequestBody NearbySearchRequest request) {
-        placeImportService.importNearbyPlaces(request); return ResponseEntity.ok().build();
+        placeImportService.importNearbyPlaces(request);
+        return ResponseEntity.accepted().build();
     }
 }

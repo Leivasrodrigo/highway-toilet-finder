@@ -22,7 +22,8 @@ public class PlaceImportService {
     private final PlaceRepository placeRepository;
     private final ToiletRepository toiletRepository;
 
-    public List<Place> importNearbyPlaces(NearbySearchRequest request) {
+    @Async("taskExecutor")
+    public void importNearbyPlaces(NearbySearchRequest request) {
         NearbySearchResponse response = googlePlacesService.searchNearby(request);
         System.out.println("Google Places retornou " + response.getResults().size() + " resultados.");
 
@@ -42,7 +43,6 @@ public class PlaceImportService {
 
         if (newPlaces.isEmpty()) {
             System.out.println("Todos os places já existem no banco.");
-            return List.of();
         }
 
         List<Place> savedPlaces = placeRepository.saveAll(newPlaces);
@@ -63,7 +63,5 @@ public class PlaceImportService {
             toiletRepository.save(toilet);
         });
         System.out.println(savedPlaces.size() + " toilets foram criados para os novos places.");
-
-        return savedPlaces;
     }
 }
