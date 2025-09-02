@@ -37,7 +37,7 @@ public class Place {
     @Column(name = "google_place_id")
     private String googlePlaceId;
 
-    @OneToMany(mappedBy = "place")
+    @OneToOne(mappedBy = "place", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Toilet> toilets;
+    private Toilet toilet;
 }

@@ -11,6 +11,7 @@ import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 import com.highwaytoiletfinder.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,5 +76,11 @@ public class PlaceService {
     public Place findById(UUID id) {
         return placeRepository.findById(id)
                 .orElseThrow(() -> new PlaceNotFoundException("Place not found with id: " + id));
+    }
+
+    public List<Place> getPlacesInArea(double minLat, double maxLat, double minLng, double maxLng, int limit) {
+        int safeLimit = Math.min(limit, 200);
+        PageRequest pageable = PageRequest.of(0, safeLimit);
+        return placeRepository.findInArea(minLat, maxLat, minLng, maxLng, pageable);
     }
 }

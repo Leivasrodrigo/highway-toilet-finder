@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 public class PlaceCommandDTO {
 
-    @NotBlank(message = "Command is required and must be 'create', 'update' or 'delete'")
+    @NotBlank(message = "Command is required.")
     private String command;
 
     private UUID id;
@@ -29,4 +29,6 @@ public class PlaceCommandDTO {
     private String googlePlaceId;
 
     private Status status;
+
+    private InAreaRequestDTO inAreaRequest;
 }
