@@ -21,11 +21,6 @@ public class Place {
     @GeneratedValue
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    @Builder.Default
-    private Status status = Status.PENDING;;
-
     private String name;
 
     private String address;

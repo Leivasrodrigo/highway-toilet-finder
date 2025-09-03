@@ -83,7 +83,6 @@ public class PlaceImportServiceTest {
         savedPlace.setLatitude(-27.123);
         savedPlace.setLongitude(-48.987);
         savedPlace.setAddress("Av. Central, 1000");
-        savedPlace.setStatus(Status.PENDING);
 
         when(placeRepository.saveAll(any())).thenReturn(List.of(savedPlace));
 

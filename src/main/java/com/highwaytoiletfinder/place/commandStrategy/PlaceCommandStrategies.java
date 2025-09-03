@@ -9,14 +9,15 @@ import java.util.List;
 @Component
 public class PlaceCommandStrategies {
 
-    private final List<PlaceCommandStrategy> strategies;
+    private final List<PlaceCommandStrategy<?>> strategies;
 
-    public PlaceCommandStrategies(List<PlaceCommandStrategy> strategies) {
+    public PlaceCommandStrategies(List<PlaceCommandStrategy<?>> strategies) {
         this.strategies = strategies;
     }
 
-    public PlaceResponseDTO execute(String command, PlaceCommandDTO dto) {
-        return strategies.stream()
+    @SuppressWarnings("unchecked")
+    public <T> T execute(String command, PlaceCommandDTO dto) {
+        return (T) strategies.stream()
                 .filter(s -> s.supports(command))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid command: " + command))

@@ -3,7 +3,6 @@
 -- changeset rodrigo:create-places-table
 CREATE TABLE places (
     id BINARY(16) PRIMARY KEY,
-    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     name VARCHAR(255),
     address VARCHAR(255),
     latitude DOUBLE,

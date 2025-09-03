@@ -1,7 +1,7 @@
 meta {
-  name: UpdatePlace1
+  name: InArea6
   type: http
-  seq: 3
+  seq: 1
 }
 
 post {
@@ -16,12 +16,14 @@ headers {
 
 body:json {
   {
-    "command": "update",
-    "id": "{{placeId1}}",
-    "name": "Posto Shell Victor Barreto",
-    "latitude": -23.545123,
-    "longitude": -46.633456,
-    "address": "Av. Victor Barreto, 3678 - Fátima, Canoas"
+    "command": "InArea",
+    "inAreaRequest": {
+      "minLat": -30.2,
+      "maxLat": -29.5,
+      "minLng": -51.3,
+      "maxLng": -50.7,
+      "limit": 100
+    }
   }
 }
 

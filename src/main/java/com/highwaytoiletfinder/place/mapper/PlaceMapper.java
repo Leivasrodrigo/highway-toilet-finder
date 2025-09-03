@@ -23,7 +23,6 @@ public class PlaceMapper {
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .googlePlaceId(place.getGooglePlaceId())
-                .status(place.getStatus())
                 .build();
     }
 
@@ -33,7 +32,6 @@ public class PlaceMapper {
         if (dto.getLatitude() != null) place.setLatitude(dto.getLatitude());
         if (dto.getLongitude() != null) place.setLongitude(dto.getLongitude());
         if (dto.getGooglePlaceId() != null) place.setGooglePlaceId(dto.getGooglePlaceId());
-        if (dto.getStatus() != null) place.setStatus(dto.getStatus());
     }
 
     public Place toEntityFromCommandDTO(PlaceCommandDTO dto) {
@@ -43,7 +41,6 @@ public class PlaceMapper {
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .googlePlaceId(dto.getGooglePlaceId())
-                .status(dto.getStatus() != null ? dto.getStatus() : Status.PENDING)
                 .build();
     }
 }

@@ -36,7 +36,6 @@ public class PlaceImportService {
                     place.setAddress(result.getVicinity());
                     place.setLatitude(result.getGeometry().getLocation().getLat());
                     place.setLongitude(result.getGeometry().getLocation().getLng());
-                    place.setStatus(Status.PENDING);
                     return place;
                 })
                 .toList();

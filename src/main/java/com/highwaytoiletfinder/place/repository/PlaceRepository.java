@@ -12,10 +12,10 @@ import java.util.UUID;
 public interface PlaceRepository extends JpaRepository<Place, UUID> {
     boolean existsByGooglePlaceId(String googlePlaceId);
 
-    @Query("SELECT p FROM Place p " +
+    @Query("SELECT p FROM Place p JOIN p.toilet t " +
             "WHERE p.latitude BETWEEN :minLat AND :maxLat " +
             "AND p.longitude BETWEEN :minLng AND :maxLng " +
-            "AND p.toilet IS NOT NULL")
+            "ORDER BY t.avgRating DESC")
     List<Place> findInArea(
             @Param("minLat") double minLat,
             @Param("maxLat") double maxLat,

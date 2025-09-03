@@ -3,6 +3,7 @@ package com.highwaytoiletfinder.place.commandStrategy;
 import com.highwaytoiletfinder.place.dto.request.InAreaRequestDTO;
 import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
+import com.highwaytoiletfinder.place.dto.response.PlacesInAreaResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
 import com.highwaytoiletfinder.place.service.PlaceService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,9 @@ public class InAreaPlaceStrategy implements PlaceCommandStrategy {
     }
 
     @Override
-    public PlaceResponseDTO execute(PlaceCommandDTO dto) {
+    public PlacesInAreaResponseDTO execute(PlaceCommandDTO dto) {
         InAreaRequestDTO inAreaDTO = dto.getInAreaRequest();
+
         List<PlaceResponseDTO> places = placeService.getPlacesInArea(
                         inAreaDTO.getMinLat(),
                         inAreaDTO.getMaxLat(),
@@ -34,10 +36,10 @@ public class InAreaPlaceStrategy implements PlaceCommandStrategy {
                         inAreaDTO.getLimit()
                 ).stream()
                 .map(placeMapper::toResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
 
-        PlaceResponseDTO wrapper = new PlaceResponseDTO();
-        wrapper.setPlacesInArea(places); //adicionar esse campo no DTO
-        return wrapper;
+        return PlacesInAreaResponseDTO.builder()
+                .places(places)
+                .build();
     }
 }

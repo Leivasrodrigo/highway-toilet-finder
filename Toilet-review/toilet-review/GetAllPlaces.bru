@@ -1,7 +1,7 @@
 meta {
   name: GetAllPlaces
   type: http
-  seq: 11
+  seq: 12
 }
 
 get {
@@ -12,4 +12,9 @@ get {
 
 headers {
   Authorization: Bearer {{jwtToken6}}
+}
+
+script:post-response {
+  bru.setEnvVar("placeId1", res.getBody()[0].id);
+  bru.setEnvVar("placeId2", res.getBody()[1].id);
 }

@@ -36,16 +36,16 @@ public class PlaceController {
     }
 
     @PostMapping
-    public ResponseEntity<PlaceResponseDTO> handlePlaceCommand(@RequestBody @Valid PlaceCommandDTO commandDTO) {
-        PlaceResponseDTO result = placeCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
+    public ResponseEntity<?>  handlePlaceCommand(@RequestBody @Valid PlaceCommandDTO commandDTO) {
+        Object result = placeCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
-        if ("create".equalsIgnoreCase(commandDTO.getCommand())) {
+        if ("create".equalsIgnoreCase(commandDTO.getCommand()) && result instanceof PlaceResponseDTO place) {
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(result.getId())
+                    .buildAndExpand(place.getId())
                     .toUri();
-            return ResponseEntity.created(location).body(result);
+            return ResponseEntity.created(location).body(place);
         } else if ("delete".equalsIgnoreCase(commandDTO.getCommand())) {
             return ResponseEntity.noContent().build();
         } else {
