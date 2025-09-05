@@ -69,3 +69,12 @@ CREATE TABLE toilet_reports (
     CONSTRAINT fk_toilet_report_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id) ON DELETE CASCADE,
     CONSTRAINT uk_toilet_report_user_toilet UNIQUE (user_id, toilet_id)
 );
+
+-- changeset rodrigo:create-user-auth-providers-table
+CREATE TABLE user_auth_providers (
+    id BINARY(16) PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    provider VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_user_auth_providers_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uk_user_provider UNIQUE (user_id, provider)
+);

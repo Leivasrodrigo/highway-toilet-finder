@@ -1,5 +1,8 @@
 package com.highwaytoiletfinder.auth.service;
 
+import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
 import com.highwaytoiletfinder.common.exceptions.EmailAlreadyInUseException;
@@ -17,6 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminInitializer adminInitializer;
+    private final UserAuthProviderRepository userAuthProviderRepository;
 
     public AuthResponseDTO register(AuthRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -28,10 +32,12 @@ public class AuthService {
         User.UserBuilder userBuilder = User.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())
-                .userRole(Role.USER)
-                .googleUser(isGoogle);
+                .userRole(Role.USER);
 
         if (!isGoogle) {
+            if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+                throw new IllegalArgumentException("Password is required for local registration.");
+            }
             userBuilder.passwordHash(passwordEncoder.encode(dto.getPassword()));
         } else {
             userBuilder.passwordHash(null);
@@ -42,6 +48,13 @@ public class AuthService {
         adminInitializer.syncAdminRole(newUser);
 
         userRepository.save(newUser);
+
+        userAuthProviderRepository.save(
+                UserAuthProvider.builder()
+                        .user(newUser)
+                        .provider(isGoogle ? AuthProvider.GOOGLE : AuthProvider.LOCAL)
+                        .build()
+        );
 
         return AuthResponseDTO.builder()
                 .id(newUser.getId())

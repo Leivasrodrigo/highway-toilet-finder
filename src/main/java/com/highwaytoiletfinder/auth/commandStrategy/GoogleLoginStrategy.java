@@ -1,5 +1,8 @@
 package com.highwaytoiletfinder.auth.commandStrategy;
 
+import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
 import com.highwaytoiletfinder.auth.service.AuthService;
 import com.highwaytoiletfinder.common.security.AdminInitializer;
 import com.highwaytoiletfinder.common.security.Role;
@@ -30,6 +33,7 @@ public class GoogleLoginStrategy implements AuthCommandStrategy {
     private final RefreshTokenService refreshTokenService;
     private final AdminInitializer adminInitializer;
     private final AuthService authService;
+    private final UserAuthProviderRepository userAuthProviderRepository;
 
     @Value("${GOOGLE_CLIENT_ID}")
     private String clientId;
@@ -69,6 +73,14 @@ public class GoogleLoginStrategy implements AuthCommandStrategy {
                         return userRepository.findByEmail(email)
                                 .orElseThrow(() -> new RuntimeException("Failed to register Google user"));
                     });
+
+            if (!userAuthProviderRepository.existsByUserAndProvider(user, AuthProvider.GOOGLE)) {
+                UserAuthProvider userAuthProvider = UserAuthProvider.builder()
+                        .user(user)
+                        .provider(AuthProvider.GOOGLE)
+                        .build();
+                userAuthProviderRepository.save(userAuthProvider);
+            }
 
             String jwt = jwtUtil.generateToken(email);
             var refreshToken = refreshTokenService.createRefreshToken(user);

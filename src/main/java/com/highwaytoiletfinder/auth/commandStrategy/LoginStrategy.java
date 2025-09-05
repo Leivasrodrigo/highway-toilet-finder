@@ -1,5 +1,7 @@
 package com.highwaytoiletfinder.auth.commandStrategy;
 
+import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
 import com.highwaytoiletfinder.common.security.AdminInitializer;
@@ -23,6 +25,7 @@ public class LoginStrategy implements AuthCommandStrategy {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final AdminInitializer adminInitializer;
+    private final UserAuthProviderRepository userAuthProviderRepository;
 
     @Override
     public boolean supports(String command) {
@@ -34,8 +37,9 @@ public class LoginStrategy implements AuthCommandStrategy {
         var user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.isGoogleUser()) {
-            throw new RuntimeException("This user must login via Google");
+        boolean hasLocal = userAuthProviderRepository.existsByUserAndProvider(user, AuthProvider.LOCAL);
+        if (!hasLocal) {
+            throw new RuntimeException("This account is linked to Google. Use Google login or set a password to enable email login.");
         }
 
         try {
@@ -45,10 +49,9 @@ public class LoginStrategy implements AuthCommandStrategy {
 
             String jwtToken = jwtUtil.generateToken(dto.getEmail());
 
-            Role currentRole = user.getUserRole();
-
+            var prevRole = user.getUserRole();
             adminInitializer.syncAdminRole(user);
-            if (currentRole != user.getUserRole()) {
+            if (prevRole != user.getUserRole()) {
                 userRepository.save(user);
             }
 
