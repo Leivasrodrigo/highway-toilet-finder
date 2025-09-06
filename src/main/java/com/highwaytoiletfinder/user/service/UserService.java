@@ -1,5 +1,8 @@
 package com.highwaytoiletfinder.user.service;
 
+import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
 import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
 import com.highwaytoiletfinder.common.security.AuthenticatedUserProvider;
 import com.highwaytoiletfinder.common.security.Role;
@@ -25,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticatedUserProvider authenticatedUserProvider;
+    private final UserAuthProviderRepository userAuthProviderRepository;
 
     public List<UserResponseDTO> getAll() {
         User authUser = authenticatedUserProvider.getAuthenticatedUser();
@@ -92,7 +96,9 @@ public class UserService {
         User user = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + targetUserId));
 
-        if (!isAdmin) {
+        boolean hasPassword = user.getPasswordHash() != null;
+
+        if (!isAdmin && hasPassword) {
             if (dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()) {
                 throw new IllegalArgumentException("Current password must be provided for verification");
             }
@@ -109,7 +115,17 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         User updated = userRepository.save(user);
 
+        if (!userAuthProviderRepository.existsByUserAndProvider(user, AuthProvider.LOCAL)) {
+            userAuthProviderRepository.save(
+                    UserAuthProvider.builder()
+                            .user(user)
+                            .provider(AuthProvider.LOCAL)
+                            .build()
+            );
+        }
+
         return userMapper.toResponseDTO(updated);
+
     }
 
     @Transactional
