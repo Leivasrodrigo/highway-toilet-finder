@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.user.service;
 
+import com.highwaytoiletfinder.auth.PasswordValidatorUtil;
 import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.repository.UserAuthProviderRepository;
@@ -83,7 +84,6 @@ public class UserService {
     @Transactional
     public UserResponseDTO updatePassword(UserCommandDTO dto) {
         User authUser = authenticatedUserProvider.getAuthenticatedUser();
-
         UUID targetUserId = dto.getId() != null ? dto.getId() : authUser.getId();
 
         boolean isOwner = authUser.getId().equals(targetUserId);
@@ -102,7 +102,6 @@ public class UserService {
             if (dto.getCurrentPassword() == null || dto.getCurrentPassword().isBlank()) {
                 throw new IllegalArgumentException("Current password must be provided for verification");
             }
-
             if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPasswordHash())) {
                 throw new IllegalArgumentException("Current password is incorrect");
             }
@@ -111,6 +110,7 @@ public class UserService {
         if (dto.getPassword() == null || dto.getPassword().isBlank()) {
             throw new IllegalArgumentException("New password must be provided");
         }
+        PasswordValidatorUtil.validate(dto.getPassword());
 
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         User updated = userRepository.save(user);

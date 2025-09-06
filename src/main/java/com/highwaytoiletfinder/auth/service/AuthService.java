@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.auth.service;
 
+import com.highwaytoiletfinder.auth.PasswordValidatorUtil;
 import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.repository.UserAuthProviderRepository;
@@ -38,6 +39,7 @@ public class AuthService {
             if (dto.getPassword() == null || dto.getPassword().isBlank()) {
                 throw new IllegalArgumentException("Password is required for local registration.");
             }
+            PasswordValidatorUtil.validate(dto.getPassword());
             userBuilder.passwordHash(passwordEncoder.encode(dto.getPassword()));
         } else {
             userBuilder.passwordHash(null);
