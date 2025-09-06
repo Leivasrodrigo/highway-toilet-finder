@@ -1,7 +1,7 @@
 package com.highwaytoiletfinder.user.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.highwaytoiletfinder.auth.authProvider.UserAuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
 import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.review.model.Review;
 import jakarta.persistence.*;

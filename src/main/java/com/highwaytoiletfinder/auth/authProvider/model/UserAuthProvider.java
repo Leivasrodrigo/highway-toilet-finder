@@ -1,5 +1,6 @@
-package com.highwaytoiletfinder.auth.authProvider;
+package com.highwaytoiletfinder.auth.authProvider.model;
 
+import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
 import com.highwaytoiletfinder.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;

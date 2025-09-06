@@ -1,8 +1,8 @@
 package com.highwaytoiletfinder.auth.commandStrategy;
 
-import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
-import com.highwaytoiletfinder.auth.authProvider.UserAuthProvider;
-import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
+import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.repository.UserAuthProviderRepository;
 import com.highwaytoiletfinder.auth.service.AuthService;
 import com.highwaytoiletfinder.common.security.AdminInitializer;
 import com.highwaytoiletfinder.common.security.Role;

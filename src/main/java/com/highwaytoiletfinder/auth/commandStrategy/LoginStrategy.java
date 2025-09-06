@@ -1,13 +1,12 @@
 package com.highwaytoiletfinder.auth.commandStrategy;
 
-import com.highwaytoiletfinder.auth.authProvider.AuthProvider;
-import com.highwaytoiletfinder.auth.authProvider.UserAuthProviderRepository;
+import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.repository.UserAuthProviderRepository;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
 import com.highwaytoiletfinder.common.security.AdminInitializer;
 import com.highwaytoiletfinder.common.security.JwtUtil;
 import com.highwaytoiletfinder.common.security.RefreshTokenService;
-import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

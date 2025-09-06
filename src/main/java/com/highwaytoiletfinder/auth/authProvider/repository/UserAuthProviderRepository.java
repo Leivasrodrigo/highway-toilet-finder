@@ -1,5 +1,7 @@
-package com.highwaytoiletfinder.auth.authProvider;
+package com.highwaytoiletfinder.auth.authProvider.repository;
 
+import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
+import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
 import com.highwaytoiletfinder.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
