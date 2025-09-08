@@ -5,6 +5,7 @@ import com.highwaytoiletfinder.user.repository.UserRepository;
 import com.highwaytoiletfinder.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,9 @@ public class PasswordResetService {
     private final UserService userService;
 
     private static final int EXPIRATION_MINUTES = 30;
-    private static final String TEMPLATE_ID = "ynrw7gynd1o42k8e";
+
+    @Value("${mailersend.from.email}")
+    private String TEMPLATE_ID;
 
     public void requestPasswordReset(String email) {
         User user = userRepository.findByEmail(email)
