@@ -1,6 +1,6 @@
 package com.highwaytoiletfinder.auth.service;
 
-import com.highwaytoiletfinder.auth.PasswordValidatorUtil;
+import com.highwaytoiletfinder.common.security.PasswordValidatorUtil;
 import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.repository.UserAuthProviderRepository;

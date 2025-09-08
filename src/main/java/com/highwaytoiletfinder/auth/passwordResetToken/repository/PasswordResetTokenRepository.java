@@ -1,5 +1,6 @@
-package com.highwaytoiletfinder.auth.passwordResetToken;
+package com.highwaytoiletfinder.auth.passwordResetToken.repository;
 
+import com.highwaytoiletfinder.auth.passwordResetToken.model.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

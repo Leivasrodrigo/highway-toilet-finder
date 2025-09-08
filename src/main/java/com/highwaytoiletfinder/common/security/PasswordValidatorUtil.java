@@ -1,4 +1,4 @@
-package com.highwaytoiletfinder.auth;
+package com.highwaytoiletfinder.common.security;
 
 import org.passay.*;
 

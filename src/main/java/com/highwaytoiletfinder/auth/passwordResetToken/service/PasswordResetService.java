@@ -1,5 +1,7 @@
-package com.highwaytoiletfinder.auth.passwordResetToken;
-import com.highwaytoiletfinder.auth.authProvider.EmailService;
+package com.highwaytoiletfinder.auth.passwordResetToken.service;
+import com.highwaytoiletfinder.auth.authProvider.emailService.EmailService;
+import com.highwaytoiletfinder.auth.passwordResetToken.model.PasswordResetToken;
+import com.highwaytoiletfinder.auth.passwordResetToken.repository.PasswordResetTokenRepository;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import com.highwaytoiletfinder.user.service.UserService;

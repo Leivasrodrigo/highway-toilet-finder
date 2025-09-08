@@ -1,8 +1,8 @@
-package com.highwaytoiletfinder.auth.passwordResetToken;
+package com.highwaytoiletfinder.auth.passwordResetToken.model;
 import com.highwaytoiletfinder.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 

@@ -3,7 +3,7 @@ package com.highwaytoiletfinder.user.commandStrategy;
 import com.highwaytoiletfinder.auth.commandStrategy.AuthCommandStrategy;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
-import com.highwaytoiletfinder.auth.passwordResetToken.PasswordResetService;
+import com.highwaytoiletfinder.auth.passwordResetToken.service.PasswordResetService;
 import com.highwaytoiletfinder.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

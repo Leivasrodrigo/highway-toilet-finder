@@ -1,7 +1,7 @@
 package com.highwaytoiletfinder.auth.commandStrategy;
 import com.highwaytoiletfinder.auth.dto.request.AuthRequestDTO;
 import com.highwaytoiletfinder.auth.dto.response.AuthResponseDTO;
-import com.highwaytoiletfinder.auth.passwordResetToken.PasswordResetService;
+import com.highwaytoiletfinder.auth.passwordResetToken.service.PasswordResetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class ForgotPasswordStrategy implements AuthCommandStrategy {
         passwordResetService.requestPasswordReset(dto.getEmail());
 
         return AuthResponseDTO.builder()
-                .message("Se o email existir, enviamos instruções para redefinir a senha.")
+                .message("If the email exists, we will send instructions to reset the password.")
                 .build();
     }
 }

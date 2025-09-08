@@ -1,9 +1,8 @@
-package com.highwaytoiletfinder.auth.authProvider;
+package com.highwaytoiletfinder.auth.authProvider.emailService;
 
 import com.mailersend.sdk.emails.Email;
 import com.mailersend.sdk.MailerSend;
 import com.mailersend.sdk.MailerSendResponse;
-import com.mailersend.sdk.Recipient;
 import com.mailersend.sdk.exceptions.MailerSendException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +21,12 @@ public class EmailService {
     @Value("${mailersend.from.name}")
     private String fromName;
 
-    /**
-     * Envia um email usando um template do MailerSend.
+    /** Sends an email using a MailerSend template.
      *
-     * @param toName      Nome do destinatário
-     * @param toEmail     Email do destinatário
-     * @param templateId  ID do template do MailerSend
-     * @param token       Token de redefinição de senha (ou outro dado de personalização)
+     * @param toName Recipient's name
+     * @param toEmail Recipient's email
+     * @param templateId MailerSend template ID
+     * @param token Password reset token (or other customization data)
      */
     public void sendPasswordResetEmail(String toName, String toEmail, String templateId, String token) {
 
@@ -37,27 +35,27 @@ public class EmailService {
         // Remetente
         email.setFrom(fromName, fromEmail);
 
-        // Destinatário
+        // Recipient
         email.addRecipient(toName, toEmail);
 
-        // Define o template
+        // Defines the template
         email.setTemplateId(templateId);
 
-        // Adiciona personalização
+        // Adds personalization
         email.setSubject("Redefinição de senha - Highway Toilet Finder");
         email.addPersonalization("name", toName);
         email.addPersonalization("token", token);
 
-        // Cria o client
+        // creates the client
         MailerSend ms = new MailerSend();
         ms.setToken(apiToken);
 
         try {
             MailerSendResponse response = ms.emails().send(email);
-            System.out.println("Email enviado com sucesso! MessageId: " + response.messageId);
+            System.out.println("Email successfully sent! MessageId: " + response.messageId);
         } catch (MailerSendException e) {
             e.printStackTrace();
-            throw new RuntimeException("Falha ao enviar email via MailerSend", e);
+            throw new RuntimeException("Failed to send email via MailerSend", e);
         }
     }
 }
