@@ -22,7 +22,7 @@ public class PasswordResetService {
 
     private static final int EXPIRATION_MINUTES = 30;
 
-    @Value("${mailersend.from.email}")
+    @Value("${email.template.id}")
     private String TEMPLATE_ID;
 
     public void requestPasswordReset(String email) {
