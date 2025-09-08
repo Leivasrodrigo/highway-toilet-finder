@@ -25,7 +25,7 @@ public class PlaceImportService {
     @Async("taskExecutor")
     public void importNearbyPlaces(NearbySearchRequest request) {
         NearbySearchResponse response = googlePlacesService.searchNearby(request);
-        System.out.println("Google Places retornou " + response.getResults().size() + " resultados.");
+        System.out.println("Google Places returned " + response.getResults().size() + " results.");
 
         List<Place> newPlaces = response.getResults().stream()
                 .filter(result -> !placeRepository.existsByGooglePlaceId(result.getPlace_id()))

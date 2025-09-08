@@ -28,7 +28,7 @@ public class ResetPasswordStrategy implements AuthCommandStrategy {
         passwordResetService.consumeTokenAndResetPassword(passwordToken, dto.getPassword());
 
         return AuthResponseDTO.builder()
-                .message("Senha redefinida com sucesso!")
+                .message("Password successfully changed!")
                 .build();
     }
 }
