@@ -78,3 +78,13 @@ CREATE TABLE user_auth_providers (
     CONSTRAINT fk_user_auth_providers_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT uk_user_provider UNIQUE (user_id, provider)
 );
+
+-- changeset rodrigo:create-password-reset-tokens-table
+CREATE TABLE password_reset_tokens (
+    id BINARY(16) PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    pin_code CHAR(6) NOT NULL,
+    expiry_date DATETIME NOT NULL,
+    CONSTRAINT fk_password_reset_tokens_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uk_pin_code UNIQUE (pin_code)
+);

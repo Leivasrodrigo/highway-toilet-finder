@@ -2,7 +2,9 @@ package com.highwaytoiletfinder.auth.passwordResetToken;
 import com.highwaytoiletfinder.auth.authProvider.EmailService;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
+import com.highwaytoiletfinder.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ public class PasswordResetService {
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final EmailService emailService;
+    private final UserService userService;
 
     private static final int EXPIRATION_MINUTES = 30;
     private static final String TEMPLATE_ID = "ynrw7gynd1o42k8e";
@@ -23,31 +26,45 @@ public class PasswordResetService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = UUID.randomUUID().toString();
+        String pin;
+        do {
+            pin = RandomStringUtils.randomNumeric(6);
+        } while (tokenRepository.existsByPinCodeAndExpiryDateAfter(pin, LocalDateTime.now()));
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
-                .token(token)
+                .pinCode(pin)
                 .user(user)
                 .expiryDate(LocalDateTime.now().plusMinutes(EXPIRATION_MINUTES))
                 .build();
         tokenRepository.save(resetToken);
 
-        emailService.sendPasswordResetEmail(user.getName(), user.getEmail(), TEMPLATE_ID, token);
+        emailService.sendPasswordResetEmail(user.getName(), user.getEmail(), TEMPLATE_ID, pin);
     }
 
-    public User validateAndConsumeToken(String token) {
-        PasswordResetToken resetToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
+    public UUID validatePin(String pin) {
+        PasswordResetToken resetToken = tokenRepository.findByPinCode(pin)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired PIN"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            tokenRepository.delete(resetToken);
+            throw new RuntimeException("PIN expired");
+        }
+
+        return resetToken.getId();
+    }
+
+    public void consumeTokenAndResetPassword(UUID tokenId, String newPassword) {
+        PasswordResetToken resetToken = tokenRepository.findById(tokenId)
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
 
         if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             tokenRepository.delete(resetToken);
             throw new RuntimeException("Token expired");
         }
 
-        User user = resetToken.getUser();
+        userService.resetPassword(resetToken.getUser(), newPassword);
 
         tokenRepository.delete(resetToken);
-
-        return user;
+        tokenRepository.deleteAllByExpiryDateBefore(LocalDateTime.now());
     }
 }

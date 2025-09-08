@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +25,8 @@ public class AuthRequestDTO {
     private String refreshToken;
 
     private String idToken;
+
+    private String pin;
+
+    private UUID passwordToken;
 }

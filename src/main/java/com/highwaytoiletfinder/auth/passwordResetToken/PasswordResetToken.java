@@ -19,8 +19,8 @@ public class PasswordResetToken {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String token;
+    @Column(nullable = false, unique = true, length = 6)
+    private String pinCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

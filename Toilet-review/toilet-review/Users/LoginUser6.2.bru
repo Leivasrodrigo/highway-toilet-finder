@@ -1,7 +1,7 @@
 meta {
-  name: RefreshUser6
+  name: LoginUser6.2
   type: http
-  seq: 20
+  seq: 26
 }
 
 post {
@@ -12,12 +12,15 @@ post {
 
 body:json {
   {
-    "command": "refresh",
-    "refreshToken": "{{refreshToken6}}"
+    "command": "login",
+    "email": "digow130@gmail.com",
+    "password": "NovaSenha234!"
   }
 }
 
 script:post-response {
+  bru.setEnvVar("userId6", res.getBody().id);
   bru.setEnvVar("jwtToken6", res.getBody().token);
   bru.setEnvVar("refreshToken6", res.getBody().refreshToken);
+  
 }

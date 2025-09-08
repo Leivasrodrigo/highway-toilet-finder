@@ -128,6 +128,26 @@ public class UserService {
     }
 
     @Transactional
+    public void resetPassword(User user, String newPassword) {
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("New password must be provided");
+        }
+        PasswordValidatorUtil.validate(newPassword);
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        if (!userAuthProviderRepository.existsByUserAndProvider(user, AuthProvider.LOCAL)) {
+            userAuthProviderRepository.save(
+                    UserAuthProvider.builder()
+                            .user(user)
+                            .provider(AuthProvider.LOCAL)
+                            .build()
+            );
+        }
+    }
+
+    @Transactional
     public UserResponseDTO deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
