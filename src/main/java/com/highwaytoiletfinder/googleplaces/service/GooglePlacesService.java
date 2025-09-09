@@ -21,15 +21,20 @@ public class GooglePlacesService {
 
     public NearbySearchResponse searchNearby(NearbySearchRequest req) {
         try {
-            String uri = UriComponentsBuilder
+            UriComponentsBuilder builder = UriComponentsBuilder
                     .fromHttpUrl("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
-                    .queryParam("location", req.getLocation())
-                    .queryParam("radius", req.getRadius())
-                    .queryParam("keyword", req.getKeyword())
-                    .queryParam("type", req.getType())
-                    .queryParam("key", apiKey)
-                    .toUriString();
+                    .queryParam("key", apiKey);
 
+            if (req.getNextPageToken() != null) {
+                builder.queryParam("pagetoken", req.getNextPageToken());
+            } else {
+                builder.queryParam("location", req.getLocation())
+                        .queryParam("radius", req.getRadius())
+                        .queryParam("keyword", req.getKeyword())
+                        .queryParam("type", req.getType());
+            }
+
+            String uri = builder.toUriString();
             HttpURLConnection conn = (HttpURLConnection) new URL(uri).openConnection();
             conn.setRequestMethod("GET");
 
@@ -38,7 +43,6 @@ public class GooglePlacesService {
             while (scanner.hasNext()) {
                 json.append(scanner.nextLine());
             }
-
             scanner.close();
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(json.toString(), NearbySearchResponse.class);

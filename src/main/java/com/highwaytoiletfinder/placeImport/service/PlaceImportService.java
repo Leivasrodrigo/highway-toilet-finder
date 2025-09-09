@@ -24,43 +24,47 @@ public class PlaceImportService {
 
     @Async("taskExecutor")
     public void importNearbyPlaces(NearbySearchRequest request) {
-        NearbySearchResponse response = googlePlacesService.searchNearby(request);
-        System.out.println("Google Places returned " + response.getResults().size() + " results.");
+        request.setNextPageToken(null);
 
-        List<Place> newPlaces = response.getResults().stream()
-                .filter(result -> !placeRepository.existsByGooglePlaceId(result.getPlace_id()))
-                .map(result -> {
-                    Place place = new Place();
-                    place.setGooglePlaceId(result.getPlace_id());
-                    place.setName(result.getName());
-                    place.setAddress(result.getVicinity());
-                    place.setLatitude(result.getGeometry().getLocation().getLat());
-                    place.setLongitude(result.getGeometry().getLocation().getLng());
-                    return place;
-                })
-                .toList();
+        String nextPageToken = null;
 
-        if (newPlaces.isEmpty()) {
-            System.out.println("Todos os places já existem no banco.");
-        }
+        do {
+            if (nextPageToken != null) {
+                try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+                request.setNextPageToken(nextPageToken);
+            }
 
-        List<Place> savedPlaces = placeRepository.saveAll(newPlaces);
-        System.out.println(savedPlaces.size() + " places foram salvos no banco.");
+            NearbySearchResponse response = googlePlacesService.searchNearby(request);
+            System.out.println("Google Places returned " + response.getResults().size() + " results.");
 
-        savedPlaces.forEach(place -> {
-            Toilet toilet = Toilet.builder()
-                    .place(place)
-                    .status(Status.PENDING)
-                    .gender(null)
-                    .price(null)
-                    .hasShower(null)
-                    .hasAccessible(null)
-                    .hasBabyChanger(null)
-                    .avgRating(null)
-                    .totalReviews(null)
-                    .build();
-            toiletRepository.save(toilet);
-        });
-        System.out.println(savedPlaces.size() + " toilets foram criados para os novos places.");
+            List<Place> newPlaces = response.getResults().stream()
+                    .filter(result -> !placeRepository.existsByGooglePlaceId(result.getPlace_id()))
+                    .map(result -> {
+                        Place place = new Place();
+                        place.setGooglePlaceId(result.getPlace_id());
+                        place.setName(result.getName());
+                        place.setAddress(result.getVicinity());
+                        place.setLatitude(result.getGeometry().getLocation().getLat());
+                        place.setLongitude(result.getGeometry().getLocation().getLng());
+                        return place;
+                    })
+                    .toList();
+
+            if (!newPlaces.isEmpty()) {
+                List<Place> savedPlaces = placeRepository.saveAll(newPlaces);
+                savedPlaces.forEach(place -> {
+                    Toilet toilet = Toilet.builder()
+                            .place(place)
+                            .status(Status.PENDING)
+                            .build();
+                    toiletRepository.save(toilet);
+                });
+                System.out.println(savedPlaces.size() + " places e toilets salvos no banco.");
+            } else {
+                System.out.println("Todos os places já existem no banco.");
+            }
+
+            nextPageToken = response.getNextPageToken();
+        } while (nextPageToken != null);
     }
 }

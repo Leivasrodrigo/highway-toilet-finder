@@ -14,6 +14,9 @@ public class NearbySearchResponse {
 
     private String status;
 
+    @JsonProperty("next_page_token")
+    private String nextPageToken;
+
     @JsonProperty("error_message")
     private String errorMessage;
 

@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.googleplaces.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -8,4 +9,6 @@ public class NearbySearchRequest {
     private int radius;
     private String keyword;
     private String type;
+    @JsonProperty("next_page_token")
+    private String nextPageToken;
 }
