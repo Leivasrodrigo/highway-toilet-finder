@@ -70,6 +70,5 @@ public class PasswordResetService {
         userService.resetPassword(resetToken.getUser(), newPassword);
 
         tokenRepository.delete(resetToken);
-        tokenRepository.deleteAllByExpiryDateBefore(LocalDateTime.now());
     }
 }

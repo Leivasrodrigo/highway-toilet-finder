@@ -42,6 +42,13 @@ public class ReviewService {
                 .toList();
     }
 
+    public List<ReviewResponseDTO> getByUserId(UUID userId) {
+        return reviewRepository.findByUserId(userId)
+                .stream()
+                .map(reviewMapper::toResponseDTO)
+                .toList();
+    }
+
     public ReviewResponseDTO getById(UUID id) {
         return reviewRepository.findById(id)
                 .map(reviewMapper::toResponseDTO)

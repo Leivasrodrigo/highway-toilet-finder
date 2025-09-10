@@ -28,7 +28,5 @@ public class PlaceCommandDTO {
 
     private String googlePlaceId;
 
-    private Status status;
-
     private InAreaRequestDTO inAreaRequest;
 }

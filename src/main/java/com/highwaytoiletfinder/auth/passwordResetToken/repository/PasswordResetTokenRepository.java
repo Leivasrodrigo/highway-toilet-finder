@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, UUID> {
     void deleteByPinCode    (String pinCode);
-    void deleteAllByExpiryDateBefore(LocalDateTime now);
+    int deleteAllByExpiryDateBefore(LocalDateTime now);
     boolean existsByPinCodeAndExpiryDateAfter(String pinCode, LocalDateTime now);
     Optional<PasswordResetToken> findByPinCode(String pinCode);
 }

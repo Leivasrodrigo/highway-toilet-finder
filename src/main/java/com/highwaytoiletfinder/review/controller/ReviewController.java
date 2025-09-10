@@ -29,6 +29,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getByToiletId(toiletId));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ReviewResponseDTO>> getByUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(reviewService.getByUserId(userId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReviewResponseDTO> getById(@PathVariable UUID id) {
         ReviewResponseDTO response = reviewService.getById(id);

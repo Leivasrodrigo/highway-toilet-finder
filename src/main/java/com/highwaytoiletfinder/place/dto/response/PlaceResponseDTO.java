@@ -22,6 +22,4 @@ public class PlaceResponseDTO {
     private Double longitude;
 
     private String googlePlaceId;
-
-    private Status status;
 }
