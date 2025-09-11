@@ -32,21 +32,40 @@ public class EmailService {
 
         Email email = new Email();
 
-        // Remetente
         email.setFrom(fromName, fromEmail);
 
-        // Recipient
         email.addRecipient(toName, toEmail);
 
-        // Defines the template
         email.setTemplateId(templateId);
 
-        // Adds personalization
-        email.setSubject("Redefinição de senha - Highway Toilet Finder");
+        email.setSubject("Redefinição de senha - Banheirinho");
         email.addPersonalization("name", toName);
         email.addPersonalization("token", token);
 
-        // creates the client
+        MailerSend ms = new MailerSend();
+        ms.setToken(apiToken);
+
+        try {
+            MailerSendResponse response = ms.emails().send(email);
+            System.out.println("Email successfully sent! MessageId: " + response.messageId);
+        } catch (MailerSendException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send email via MailerSend", e);
+        }
+    }
+
+    public void sendWelcomeEmail(String toName, String toEmail, String templateId) {
+        Email email = new Email();
+
+        email.setFrom(fromName, fromEmail);
+
+        email.addRecipient(toName, toEmail);
+
+        email.setTemplateId(templateId);
+
+        email.setSubject("Bemvindo ao Banheirinho!");
+        email.addPersonalization("name", toName);
+
         MailerSend ms = new MailerSend();
         ms.setToken(apiToken);
 

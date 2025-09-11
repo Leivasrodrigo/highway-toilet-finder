@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.auth.service;
 
+import com.highwaytoiletfinder.auth.authProvider.emailService.EmailService;
 import com.highwaytoiletfinder.common.security.PasswordValidatorUtil;
 import com.highwaytoiletfinder.auth.authProvider.authProviderEnum.AuthProvider;
 import com.highwaytoiletfinder.auth.authProvider.model.UserAuthProvider;
@@ -12,6 +13,7 @@ import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AdminInitializer adminInitializer;
     private final UserAuthProviderRepository userAuthProviderRepository;
+    private final EmailService emailService;
+
+    @Value("${email.template.welcome}")
+    private String WELCOME_TEMPLATE_ID;
 
     public AuthResponseDTO register(AuthRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -57,6 +63,8 @@ public class AuthService {
                         .provider(isGoogle ? AuthProvider.GOOGLE : AuthProvider.LOCAL)
                         .build()
         );
+
+        emailService.sendWelcomeEmail(newUser.getName(), newUser.getEmail(), WELCOME_TEMPLATE_ID);
 
         return AuthResponseDTO.builder()
                 .id(newUser.getId())

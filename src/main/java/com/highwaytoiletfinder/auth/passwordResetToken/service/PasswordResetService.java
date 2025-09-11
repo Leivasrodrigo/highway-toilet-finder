@@ -24,7 +24,7 @@ public class PasswordResetService {
 
     private static final int EXPIRATION_MINUTES = 30;
 
-    @Value("${email.template.id}")
+    @Value("${email.template.forgot}")
     private String TEMPLATE_ID;
 
     public void requestPasswordReset(String email) {
