@@ -13,10 +13,12 @@ import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -64,7 +66,11 @@ public class AuthService {
                         .build()
         );
 
-        emailService.sendWelcomeEmail(newUser.getName(), newUser.getEmail(), WELCOME_TEMPLATE_ID);
+        try {
+            emailService.sendWelcomeEmail(newUser.getName(), newUser.getEmail(), WELCOME_TEMPLATE_ID);
+        } catch (Exception e) {
+            log.error("Failed to send welcome email for {} but user was registered successfully", newUser.getEmail(), e);
+        }
 
         return AuthResponseDTO.builder()
                 .id(newUser.getId())
