@@ -88,3 +88,12 @@ CREATE TABLE password_reset_tokens (
     CONSTRAINT fk_password_reset_tokens_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT uk_pin_code UNIQUE (pin_code)
 );
+
+-- changeset rodrigo:add-cascade-to-reviews
+ALTER TABLE reviews
+  DROP FOREIGN KEY fk_review_user,
+  ADD CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE reviews
+  DROP FOREIGN KEY fk_review_toilet,
+  ADD CONSTRAINT fk_review_toilet FOREIGN KEY (toilet_id) REFERENCES toilets(id) ON DELETE CASCADE;
