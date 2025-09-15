@@ -17,6 +17,21 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.sap.hcp.cf.logging</groupId>
+            <artifactId>cf-java-logging-support-logback</artifactId>
+            <version>3.8.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.hcp.cf.logging</groupId>
+            <artifactId>cf-java-logging-support-servlet-jakarta</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud.sql</groupId>
             <artifactId>mysql-socket-factory-connector-j-8</artifactId>
             <version>1.11.2</version>
