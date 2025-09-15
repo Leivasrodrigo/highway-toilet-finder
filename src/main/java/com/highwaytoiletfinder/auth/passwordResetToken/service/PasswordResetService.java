@@ -6,13 +6,16 @@ import com.highwaytoiletfinder.user.model.User;
 import com.highwaytoiletfinder.user.repository.UserRepository;
 import com.highwaytoiletfinder.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PasswordResetService {
@@ -28,8 +31,14 @@ public class PasswordResetService {
     private String TEMPLATE_ID;
 
     public void requestPasswordReset(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            log.warn("Password reset requested for non-existing email: {}", email);
+            return;
+        }
+
+        User user = optionalUser.get();
 
         String pin;
         do {
