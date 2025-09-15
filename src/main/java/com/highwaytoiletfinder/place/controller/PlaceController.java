@@ -36,7 +36,7 @@ public class PlaceController {
     }
 
     @PostMapping
-    public ResponseEntity<?>  handlePlaceCommand(@RequestBody @Valid PlaceCommandDTO commandDTO) {
+    public ResponseEntity<?> handlePlaceCommand(@RequestBody @Valid PlaceCommandDTO commandDTO) {
         Object result = placeCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
 
         if ("create".equalsIgnoreCase(commandDTO.getCommand()) && result instanceof PlaceResponseDTO place) {

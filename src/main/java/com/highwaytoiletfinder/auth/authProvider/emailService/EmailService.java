@@ -31,28 +31,25 @@ public class EmailService {
      * @param token Password reset token (or other customization data)
      */
     public void sendPasswordResetEmail(String toName, String toEmail, String templateId, String token) {
-
-        Email email = new Email();
-
-        email.setFrom(fromName, fromEmail);
-
-        email.addRecipient(toName, toEmail);
-
-        email.setTemplateId(templateId);
-
-        email.setSubject("Redefinição de senha - Banheirinho");
-        email.addPersonalization("name", toName);
-        email.addPersonalization("token", token);
-
-        MailerSend ms = new MailerSend();
-        ms.setToken(apiToken);
-
         try {
+            Email email = new Email();
+            email.setFrom(fromName, fromEmail);
+            email.addRecipient(toName, toEmail);
+            email.setTemplateId(templateId);
+            email.setSubject("Redefinição de senha - Banheirinho");
+            email.addPersonalization("name", toName);
+            email.addPersonalization("token", token);
+
+            MailerSend ms = new MailerSend();
+            ms.setToken(apiToken);
+
             MailerSendResponse response = ms.emails().send(email);
-            System.out.println("Email successfully sent! MessageId: " + response.messageId);
+            log.info("Password reset email sent successfully! MessageId: {}", response.messageId);
+
         } catch (MailerSendException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to send email via MailerSend", e);
+            log.error("Failed to send password reset email via MailerSend to {}: {}", toEmail, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error while sending password reset email to {}: {}", toEmail, e.getMessage(), e);
         }
     }
 
