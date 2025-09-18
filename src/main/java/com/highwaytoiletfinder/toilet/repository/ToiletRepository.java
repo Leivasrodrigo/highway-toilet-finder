@@ -20,4 +20,6 @@ public interface ToiletRepository extends JpaRepository<Toilet, UUID> {
     Optional<Toilet> findById(UUID id);
 
     boolean existsByPlaceId(UUID placeId);
+
+    Optional<Toilet> findByPlaceId(UUID id);
 }

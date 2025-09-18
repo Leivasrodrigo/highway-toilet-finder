@@ -42,6 +42,12 @@ public class ToiletService {
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
     }
 
+    public ToiletResponseDTO getByPlaceId(UUID id) {
+        return toiletRepository.findByPlaceId(id)
+                .map(toiletMapper::toResponseDTO)
+                .orElseThrow(() -> new ToiletNotFoundException("Toilet not found for place with id: " + id));
+    }
+
     public ToiletResponseDTO createToilet(ToiletCommandDTO dto) {
         if (dto.getId() != null) {
             throw new IllegalArgumentException("ID must not be provided for creation");

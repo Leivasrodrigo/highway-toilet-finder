@@ -36,6 +36,12 @@ public class ToiletController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("place/{id}")
+    public ResponseEntity<ToiletResponseDTO> getByPlaceId(@PathVariable UUID id) {
+        ToiletResponseDTO response = toiletService.getByPlaceId(id);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping
     public ResponseEntity<ToiletResponseDTO> handleToiletCommand(@RequestBody @Valid ToiletCommandDTO commandDTO) {
         ToiletResponseDTO result = toiletCommandStrategies.execute(commandDTO.getCommand(), commandDTO);
