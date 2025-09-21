@@ -20,17 +20,15 @@ public class AsyncConfig {
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("Async-");
         executor.setTaskDecorator(runnable -> {
-            String correlationId = MDC.get("correlationId");
+            var contextMap = MDC.getCopyOfContextMap();
             return () -> {
-                if (correlationId != null) {
-                    MDC.put("correlationId", correlationId);
+                if (contextMap != null) {
+                    MDC.setContextMap(contextMap);
                 }
                 try {
                     runnable.run();
                 } finally {
-                    if (correlationId != null) {
-                        MDC.remove("correlationId");
-                    }
+                    MDC.clear();
                 }
             };
         });

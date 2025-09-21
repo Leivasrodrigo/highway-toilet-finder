@@ -13,14 +13,7 @@
         @Service
         @RequiredArgsConstructor
         public class PlaceImportService {
-            private final GooglePlacesService googlePlacesService;
-            private final PlaceRepository placeRepository;
-            private final ToiletRepository toiletRepository;
             private final NearbyPlacesService nearbyPlacesService;
-
-            public void importNearbyPlaces(NearbySearchRequest request) {
-                nearbyPlacesService.importNearbyPlaces(request);
-            }
 
             public void importPlacesInGrid(PlaceImportGridRequest dto) {
                 double stepLat = dto.getRadius() / 111000.0;
@@ -33,7 +26,7 @@
                         request.setRadius(dto.getRadius());
                         request.setType(dto.getType());
                         request.setKeyword(dto.getKeyword());
-                        importNearbyPlaces(request);
+                        nearbyPlacesService.importNearbyPlaces(request);
                     }
                 }
             }
