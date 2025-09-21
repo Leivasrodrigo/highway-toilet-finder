@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.common.security;
 
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -18,6 +19,21 @@ public class AsyncConfig {
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("Async-");
+        executor.setTaskDecorator(runnable -> {
+            String correlationId = MDC.get("correlationId");
+            return () -> {
+                if (correlationId != null) {
+                    MDC.put("correlationId", correlationId);
+                }
+                try {
+                    runnable.run();
+                } finally {
+                    if (correlationId != null) {
+                        MDC.remove("correlationId");
+                    }
+                }
+            };
+        });
         executor.initialize();
 
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
