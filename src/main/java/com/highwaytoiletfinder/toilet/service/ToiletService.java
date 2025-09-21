@@ -73,6 +73,11 @@ public class ToiletService {
         Toilet existing = toiletRepository.findById(dto.getId())
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + dto.getId()));
 
+        User user = authenticatedUserProvider.getAuthenticatedUser();
+        if (dto.getStatus() != null && !Role.ADMIN.equals(user.getUserRole())) {
+            throw new AccessDeniedException("Only admins can update the status toilets. Users must use the report tool.");
+        }
+
         toiletMapper.updateEntityFromCommandDTO(dto, existing);
 
         Toilet updated = toiletRepository.save(existing);
