@@ -1,4 +1,4 @@
-package com.highwaytoiletfinder.placeImport;
+package com.highwaytoiletfinder.placeImport.dto;
 
 import lombok.*;
 

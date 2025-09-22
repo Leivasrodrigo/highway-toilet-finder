@@ -1,10 +1,7 @@
         package com.highwaytoiletfinder.placeImport.service;
 
         import com.highwaytoiletfinder.googleplaces.model.NearbySearchRequest;
-        import com.highwaytoiletfinder.googleplaces.service.GooglePlacesService;
-        import com.highwaytoiletfinder.place.repository.PlaceRepository;
-        import com.highwaytoiletfinder.placeImport.PlaceImportGridRequest;
-        import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
+        import com.highwaytoiletfinder.placeImport.dto.PlaceImportGridRequest;
         import lombok.RequiredArgsConstructor;
         import lombok.extern.slf4j.Slf4j;
         import org.springframework.stereotype.Service;

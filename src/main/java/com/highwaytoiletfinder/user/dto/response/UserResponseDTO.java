@@ -1,5 +1,6 @@
 package com.highwaytoiletfinder.user.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.highwaytoiletfinder.common.security.Role;
 import com.highwaytoiletfinder.review.dto.response.ReviewResponseDTO;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @NoArgsConstructor

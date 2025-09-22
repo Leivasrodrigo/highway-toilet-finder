@@ -1,7 +1,7 @@
 package com.highwaytoiletfinder.placeImport.controller;
 
 import com.highwaytoiletfinder.googleplaces.model.NearbySearchRequest;
-import com.highwaytoiletfinder.placeImport.PlaceImportGridRequest;
+import com.highwaytoiletfinder.placeImport.dto.PlaceImportGridRequest;
 import com.highwaytoiletfinder.placeImport.service.NearbyPlacesService;
 import com.highwaytoiletfinder.placeImport.service.PlaceImportService;
 import lombok.RequiredArgsConstructor;

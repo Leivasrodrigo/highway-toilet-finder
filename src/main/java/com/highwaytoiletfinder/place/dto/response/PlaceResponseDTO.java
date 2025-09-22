@@ -1,10 +1,12 @@
 package com.highwaytoiletfinder.place.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.highwaytoiletfinder.common.enums.Status;
 import lombok.*;
 
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @NoArgsConstructor
