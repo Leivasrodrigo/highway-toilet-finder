@@ -17,6 +17,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.sap.hcp.cf.logging</groupId>
             <artifactId>cf-java-logging-support-logback</artifactId>
             <version>3.8.4</version>
@@ -29,7 +33,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>3.4.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud.sql</groupId>

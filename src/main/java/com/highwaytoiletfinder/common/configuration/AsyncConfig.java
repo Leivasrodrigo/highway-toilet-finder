@@ -1,4 +1,4 @@
-package com.highwaytoiletfinder.common.security;
+package com.highwaytoiletfinder.common.configuration;
 
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;

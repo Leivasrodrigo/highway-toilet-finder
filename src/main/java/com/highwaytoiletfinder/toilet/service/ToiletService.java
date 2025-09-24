@@ -15,8 +15,11 @@ import com.highwaytoiletfinder.toilet.repository.ToiletRepository;
 import com.highwaytoiletfinder.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,12 +39,14 @@ public class ToiletService {
                 .map(toiletMapper::toResponseDTO)
                 .toList();    }
 
+    @Cacheable(value = "toilets", key = "#id")
     public ToiletResponseDTO getById(UUID id) {
         return toiletRepository.findById(id)
                 .map(toiletMapper::toResponseDTO)
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));
     }
 
+    @Cacheable(value = "toilets", key = "'place:' + #id")
     public ToiletResponseDTO getByPlaceId(UUID id) {
         return toiletRepository.findByPlaceId(id)
                 .map(toiletMapper::toResponseDTO)
@@ -70,6 +75,7 @@ public class ToiletService {
         return toiletMapper.toResponseDTO(saved);
     }
 
+    @CachePut(value = "toilets", key = "#toilet.id")
     @Transactional
     public ToiletResponseDTO updateToilet(ToiletCommandDTO dto) {
         if (dto.getId() == null) {
@@ -90,6 +96,7 @@ public class ToiletService {
         return toiletMapper.toResponseDTO(updated);
     }
 
+    @CacheEvict(value = "toilets", allEntries = true)
     @Transactional
     public ToiletResponseDTO deleteToilet(UUID id) {
         Toilet toilet = toiletRepository.findById(id)
@@ -104,6 +111,7 @@ public class ToiletService {
         return new ToiletResponseDTO();
     }
 
+    @Cacheable(value = "toilets", key = "#id")
     public Toilet findById(UUID id) {
         return toiletRepository.findById(id)
                 .orElseThrow(() -> new ToiletNotFoundException("Toilet not found with id: " + id));

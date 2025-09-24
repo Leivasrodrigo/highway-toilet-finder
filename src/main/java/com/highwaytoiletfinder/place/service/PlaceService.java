@@ -1,6 +1,8 @@
 package com.highwaytoiletfinder.place.service;
 
-import com.highwaytoiletfinder.common.exceptions.UserNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import com.highwaytoiletfinder.place.dto.request.PlaceCommandDTO;
 import com.highwaytoiletfinder.place.dto.response.PlaceResponseDTO;
 import com.highwaytoiletfinder.place.mapper.PlaceMapper;
@@ -8,7 +10,6 @@ import com.highwaytoiletfinder.place.model.Place;
 import com.highwaytoiletfinder.place.repository.PlaceRepository;
 import com.highwaytoiletfinder.common.exceptions.PlaceNotFoundException;
 
-import com.highwaytoiletfinder.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +33,8 @@ public class PlaceService {
                 .toList();
     }
 
+    @Cacheable(value = "places", key = "#id")
+
     public PlaceResponseDTO getById(UUID id) {
         return placeRepository.findById(id)
                 .map(placeMapper::toResponseDTO)
@@ -49,7 +52,7 @@ public class PlaceService {
         return placeMapper.toResponseDTO(saved);
     }
 
-    @Transactional
+    @CachePut(value = "places", key = "#place.id")    @Transactional
     public PlaceResponseDTO updatePlace(PlaceCommandDTO dto) {
         if (dto.getId() == null) {
             throw new IllegalArgumentException("ID must be provided for update");
@@ -64,6 +67,7 @@ public class PlaceService {
         return placeMapper.toResponseDTO(updated);
     }
 
+    @CacheEvict(value = "places", allEntries = true)
     @Transactional
     public PlaceResponseDTO deletePlace(UUID id) {
         Place place = placeRepository.findById(id)
@@ -73,6 +77,7 @@ public class PlaceService {
         return new PlaceResponseDTO();
     }
 
+    @Cacheable(value = "places", key = "#id")
     public Place findById(UUID id) {
         return placeRepository.findById(id)
                 .orElseThrow(() -> new PlaceNotFoundException("Place not found with id: " + id));
